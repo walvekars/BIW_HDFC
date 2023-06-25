@@ -1,0 +1,9 @@
+<odoo>
+
+    <menuitem id="config"
+              name="Configuration"
+              parent="base.menu_administration"
+              groups="base.group_system"
+              sequence="1"/>
+
+</odoo>

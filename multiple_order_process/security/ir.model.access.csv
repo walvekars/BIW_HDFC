@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access.temp.rec,access_temp_rec,multiple_order_process.model_temp_rec,,1,1,1,1
+access.pemt.rec,access_pemt_rec,multiple_order_process.model_pemt_rec,,1,1,1,1
+access.update.rec,access_update_rec,multiple_order_process.model_update_rec,,1,1,1,1
+access.logs.report,access_logs_report,multiple_order_process.model_logs_report,,1,1,1,1
+access.store.files,access_store_files,multiple_order_process.model_store_files,,1,0,0,0
+access.multi.try,access_multi_try,multiple_order_process.model_multi_try,,1,1,1,1
+access.courier.company.code,access_courier_company_code,multiple_order_process.model_courier_company_code,,1,1,1,1
+access.courier.priority,access_courier_priority,multiple_order_process.model_courier_priority,,1,1,1,1
+access.air.way.bill,access_air_way_bill,multiple_order_process.model_air_way_bill,,1,1,1,1
+access.client.catalogue,access_client_catalogue,multiple_order_process.model_client_catalogue,,1,1,1,1
+access.update.master.wizard,access_update_master_wizard,multiple_order_process.model_update_master_wizard,,1,1,1,1
+access.shipment.file.wizard,access_shipment_file_wizard,multiple_order_process.model_shipment_file_wizard,,1,1,1,1

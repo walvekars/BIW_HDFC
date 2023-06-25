@@ -1,0 +1,92 @@
+<odoo>
+    <record id="stock_picking_enhanced_form" model="ir.ui.view">
+        <field name="name">"stock.picking.enhanced.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="unique_ref" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}" context="{'custom_search': True}"/>
+                <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="return_order" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="order_status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', '!=', 'done'), ('picking_type_code', '=', 'outgoing')]}</attribute>
+            </xpath>
+            <xpath expr="//form/header/button[@name='button_validate']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft', 'waiting')), ('picking_type_code', '=', 'outgoing')]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft', 'waiting')), ('picking_type_code', '=', 'outgoing')]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_enhanced_tree" model="ir.ui.view">
+        <field name="name">stock.picking.enhanced.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="unique_ref" context="{'custom_search': True}"/>
+                <field name="zip" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="hand_off_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="hand_off_date_time" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}" context="{'invoice_with_status': True}"/>
+                <field name="invoice_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="order_status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_confirm_hand_off" model="ir.actions.server">
+        <field name="name">Hand Off</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">records.confirm_hand_off()</field>
+    </record>
+
+    <record id="view_picking_internal_search_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.internal.search.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[@name='cancel']" position="after">
+                <filter name="state_wip" string="WIP - DO" domain="[('order_status', '=', 'wip')]"/>
+                <filter name="state_ready" string="Ready - DO" domain="[('order_status', '=', 'ready')]"/>
+                <filter name="state_handoff" string="Hand Off - DO" domain="[('order_status', '=', 'hand_off')]"/>
+                <filter name="state_not_serviceable" string="Not Serviceable - DO" domain="[('order_status', '=', 'not_serviceable')]"/>
+                <filter name="state_dispatched" string="Dispatched - DO" domain="[('order_status', '=', 'dispatched')]"/>
+                <filter name="state_delivered" string="Delivered - DO" domain="[('order_status', '=', 'delivered')]"/>
+                <filter name="state_returned" string="Returned - DO" domain="[('order_status', '=', 'returned')]"/>
+                <filter name="state_re_dispatched" string="Re-Dispatched - DO" domain="[('order_status', '=', 're_dispatched')]"/>
+                <filter name="state_canceled" string="Cancelled - DO" domain="[('order_status', '=', 'cancelled')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="unique_ref_search" model="ir.ui.view">
+        <field name="name">Search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="unique_ref" string="Unique Reference" filter_domain="[('unique_ref','ilike', self)]"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="hand_off_unique_id" model="ir.sequence">
+        <field name="name">Hand-off Sequence</field>
+        <field name="code">hand_off_ids</field>
+        <field name="prefix">H</field>
+        <field name="padding">6</field>
+    </record>
+</odoo>

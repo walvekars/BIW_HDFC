@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_courier_details_in_delivery" model="ir.ui.view">
+        <field name="name">view.courier.details</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="courier_details" attrs="{'invisible': [('is_company', '=', False)]}"/>
+                <field name="awb_no_unassigned" attrs="{'invisible': ['|', ('courier_details', '=', False), ('is_company', '=', False)]}"/>
+                <field name="courier_account_number" attrs="{'invisible': ['|', ('courier_details', '=', False), ('is_company', '=', False)]}"/>
+                <field name="priority_no" readonly="0"
+                       attrs="{'invisible': ['|', ('courier_details', '=', False), ('is_company', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string='Serviced Pincode' name="serviced_pincode"
+                      attrs="{'invisible': ['|', ('courier_details', '=', False), ('is_company', '=', False)]}">
+                    <field name="courier_pincode_ids">
+                        <tree editable="bottom">
+                            <field name="courier_company"/>
+                            <field name="pin_code"/>
+                            <field name="location"/>
+                            <field name="state"/>
+                            <field name="hub"/>
+                            <field name="airport"/>
+                            <field name="tier"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string='Serviced AWB' name="serviced_awb"
+                      attrs="{'invisible': ['|', ('courier_details', '=', False), ('is_company', '=', False)]}">
+                    <field name="serviced_awb">
+                        <tree editable="bottom">
+                            <field name="serviced_awb_link"/>
+                            <field name="awb_number"/>
+                            <field name="delivery_order_number"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="air_way_bill_view" model="ir.ui.view">
+        <field name="name">air.way.bill.view</field>
+        <field name="model">air.way.bill</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="serviced_awb_link" domain="[('is_company', '=', True), ('courier_details', '=', True)]"/>
+                <field name='awb_number'/>
+                <field name='delivery_order_number'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="air_way_bill_view_form" model="ir.ui.view">
+        <field name="name">air.way.bill.view.form</field>
+        <field name="model">air.way.bill</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="serviced_awb_link"
+                           domain="[('is_company', '=', True), ('courier_details', '=', True)]"/>
+                    <group>
+                        <group>
+                            <field name='awb_number'/>
+                        </group>
+                        <group>
+                            <field name='delivery_order_number'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="courier_company_code_tree" model="ir.ui.view">
+        <field name="name">courier.company.code.tree</field>
+        <field name="model">courier.company.code</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name='courier_company' domain="[('is_company', '=', True), ('courier_details', '=', True)]"/>
+                <field name='pin_code'/>
+                <field name="location"/>
+                <field name="state"/>
+                <field name="hub"/>
+                <field name="airport"/>
+                <field name="tier"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="courier_company_code_form" model="ir.ui.view">
+        <field name="name">courier.company.code.form</field>
+        <field name="model">courier.company.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name='courier_company'
+                                   domain="[('is_company', '=', True), ('courier_details', '=', True)]"/>
+                        </group>
+                        <group>
+                            <field name='pin_code'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="courier_priority_form" model="ir.ui.view">
+        <field name="name">Courier Priority</field>
+        <field name="model">courier.priority</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="priority_no"/>
+                        </group>
+                        <group>
+                            <field name="courier_company"
+                                   options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"
+                                   domain="[('is_company', '=', True), ('courier_details', '=', True)]"/>
+
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="courier_priority_tree" model="ir.ui.view">
+        <field name="name">Courier Priority</field>
+        <field name="model">courier.priority</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="priority_no"/>
+                <field name="courier_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="client_catalogue_tree" model="ir.ui.view">
+        <field name="name">Client Catalogue</field>
+        <field name="model">client.catalogue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="global_code"/>
+                <field name="client"/>
+                <field name="client_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_air_way_bill" model="ir.actions.act_window">
+        <field name="name">Air Way Bill</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">air.way.bill</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="action_courier_company_code" model="ir.actions.act_window">
+        <field name="name">Courier Companies</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">courier.company.code</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'custom_pin_name': True}</field>
+    </record>
+
+    <record id="action_courier_priority" model="ir.actions.act_window">
+        <field name="name">Courier Priority</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">courier.priority</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Create Priorities For Courier Companies</p>
+        </field>
+    </record>
+
+    <record id="action_client_catalogue" model="ir.actions.act_window">
+        <field name="name">Client Catalogue</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">client.catalogue</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Import Client Catalogue For Companies</p>
+        </field>
+    </record>
+
+    <menuitem id="air_way_bill_menu"
+              name="Air-Way-Bill"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_air_way_bill"
+              sequence="135"/>
+
+    <menuitem id="courier_company_code"
+              name="Delivery Partners"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_courier_company_code"
+              sequence="136"/>
+
+    <menuitem id="client_catalogue"
+              name="Client Catalogue"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_client_catalogue"
+              sequence="137"/>
+
+    <menuitem id="menu_courier_priority"
+              name="Courier Priority"
+              parent="multiple_order_process.config"
+              action="action_courier_priority"
+              groups="base.group_system"
+              sequence="0"/>
+
+
+</odoo>

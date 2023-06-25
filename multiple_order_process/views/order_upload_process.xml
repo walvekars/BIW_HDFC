@@ -1,0 +1,174 @@
+<odoo>
+    <record id="trial_sheet_tree" model="ir.ui.view">
+        <field name="name">trial.sheet.tree</field>
+        <field name="model">temp.rec</field>
+        <field name="arch" type="xml">
+            <tree create="1">
+                <header>
+                    <button name="validate" string="Validate" type="object"/>
+                </header>
+                <field name="unique_ref"/>
+                <field name="file_name"/>
+                <field name="up_date"/>
+                <field name="customer"/>
+
+                <field name="validated" invisible="1"/>
+
+                <field name="ref_no"/>
+                <field name="customer_name"/>
+                <field name="add1"/>
+                <field name="add2"/>
+                <field name="add3"/>
+                <field name="city"/>
+                <field name="zip_code"/>
+                <field name="ph_res"/>
+                <field name="ph_off"/>
+                <field name="mobile"/>
+                <field name="email_id"/>
+                <field name="item_code"/>
+                <field name="item_desc"/>
+                <field name="global_item_code"/>
+                <field name="qty"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="custom_res_partner_fields_form" model="ir.ui.view">
+        <field name="name">custom.res.partner.fields.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="unique_ref" attrs="{'invisible': ['|', '|', ('courier_details', '=', True), ('is_company','=', True), ('type', '!=', 'delivery')]}"/>
+<!--                <field name="order_no" attrs="{'invisible': ['|', '|', ('courier_details', '=', True), ('is_company','=', True), ('type', '!=', 'delivery')]}"/>-->
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="pan_no"/>
+                <field name="cin_no"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="string">GST IN</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="after">
+                <field name="street3" placeholder="Street 3..."/>
+            </xpath>
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <page string='Product Catalogue' name="product_catalogue_page" attrs="{'invisible': ['|', '|', ('courier_details', '=', True), ('is_company','=', False), ('type', '=', 'delivery')]}">
+                    <field name="product_catalogue">
+                        <tree editable="bottom">
+                            <field name="client"/>
+                            <field name="global_code"/>
+                            <field name="client_code"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="primary_contact"
+                       attrs="{'invisible': ['|',('courier_details', '=', True), ('is_company','=', False)]}"/>
+                <field name="program_name"
+                       attrs="{'invisible': ['|',('courier_details', '=', True), ('is_company','=', False)]}"/>
+                <field name="program_code"
+                       attrs="{'invisible': ['|',('courier_details', '=', True), ('is_company','=', False)]}"/>
+                <field name="region"
+                       attrs="{'invisible': ['|',('courier_details', '=', True), ('is_company','=', False)]}"/>
+                <field name="attn_name" attrs="{'invisible': ['|',('courier_details', '=', True), ('is_company','=', False)]}"/>
+                <field name="tries" attrs="{'invisible': [('type', '!=', 'delivery')]}" widget="badge" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_enhance_form" model="ir.ui.view">
+        <field name="name">product.template.enhance.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="before">
+                <field name="mrp_field" string="MRP"/>
+            </xpath>
+            <xpath expr="//field[@name='uom_po_id']" position="after">
+                <label for="measurement" string="Measurement (L*B*H) in cms"/>
+                <div class="address_format">
+                    <field name="measurement" style="width: 30%"/>*
+                    <field name="breadth" style="width: 30%"/>*
+                    <field name="height" style="width: 30%"/>
+                </div>
+                <field name="com_measurement"/>
+                <field name="product_weight"/>
+                <field name="product_volumetric_weight"/>
+                <field name="packing_material"/>
+                <field name="country_of_origin"/>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page string='Client Catalogue' name="client_catalogue_page">
+                    <field name="client_catalogue">
+                        <tree editable="bottom">
+                            <field name="global_code"/>
+                            <field name="client"/>
+                            <field name="client_code"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stored_files_tree_view" model="ir.ui.view">
+        <field name="name">stored.files.tree.view</field>
+        <field name="model">store.files</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="extension_name" string="With Extension"/>
+                <field name="data" string="File Size"/>
+                <field name="upload_time"/>
+                <field name='client_id'/>
+                <field name='order_count'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="seq_order_reference" model="ir.sequence">
+        <field name="name">Records Sequence</field>
+        <field name="code">temp.rec</field>
+        <field name="prefix">BIW-</field>
+        <field name="padding">10</field>
+    </record>
+
+    <record id="action_trial_sheet" model="ir.actions.act_window">
+        <field name="name">Order Upload</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">temp.rec</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Upload Your Excel Record!</p>
+        </field>
+    </record>
+
+    <record id="action_stored_files" model="ir.actions.act_window">
+        <field name="name">Stored Files</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">store.files</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="order_sheet"
+              name="Order Sheet"
+              parent="sale.sale_menu_root"
+              sequence="1"/>
+
+    <menuitem id="trial_sheet"
+              name="Order Upload"
+              parent="order_sheet"
+              action="action_trial_sheet"
+              sequence="1"/>
+
+    <menuitem id="stored_files_view"
+              name="Stored Files"
+              parent="multiple_order_process.log_reports"
+              action="action_stored_files"
+              sequence="2"/>
+
+</odoo>

@@ -1,0 +1,50 @@
+<odoo>
+
+    <record id="multi_tries_form" model="ir.ui.view">
+        <field name="name">multi.tries.form</field>
+        <field name="model">multi.try</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="type"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_multi_tries" model="ir.actions.act_window">
+        <field name="name">Multi Tries</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">multi.try</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_re_dispatched_orders" model="ir.actions.act_window">
+        <field name="name">Re-Dispatched Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="domain">[('try_no_type', '!=', 0)]</field>
+        <field name="context">{'custom_name': True}</field>
+        <field name="res_model">pemt.rec</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Re-Dispatched Orders Reflects Here!</p>
+        </field>
+    </record>
+
+    <menuitem id="re_dispatched_orders"
+              name="Re-Dispatched Orders"
+              parent="multiple_order_process.order_sheet"
+              action="action_re_dispatched_orders"
+              sequence="3"/>
+
+    <menuitem id="menu_multi_try"
+              name="Multi Tries"
+              parent="config"
+              action="action_multi_tries"
+              groups="base.group_system"
+              sequence="1"/>
+
+</odoo>

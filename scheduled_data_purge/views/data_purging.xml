@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="ir_cron_view_form_inherit" model="ir.ui.view">
+        <field name="name">ir.cron.view.form.inherit</field>
+        <field name="model">ir.cron</field>
+        <field name="inherit_id" ref="base.ir_cron_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='action_content']" position="after">
+                <group name="new_group">
+                    <field name="data_purge_details" nolabel="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='model_id']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='data_purge_details']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)], 'invisible': [('data_purge_details', '=', False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='interval_number']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='interval_type']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='nextcall']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='numbercall']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="attrs">
+                    {'readonly': [('data_purge_details','!=',False)]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="schedule_data_purge_form" model="ir.ui.view">
+        <field name="name">schedule.data.purge.form</field>
+        <field name="model">schedule.data.purging</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}" attrs="{'readonly': [('done_creation','=',True)]}"/>
+<!--                            domain="[('is_company','=', True), ('courier_details','=', False)]"-->
+                            <field name="done_creation" invisible="1"/>
+                            <field name="ir_cron" invisible="1"/>
+                            <label for="execute_every" string="Execute Every"/>
+                            <div class="address_format">
+                                <field name="execute_every" style="width:45%;margin-right:5%"/>
+                                <field name="interval_type" style="width:50%"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="time_to_execute"/>
+                            <label for="days_before" string="Days Before"/>
+                            <div class="address_format">
+                                <field name="days_before" style="width:20%;margin-right:30%"/>
+                                <label for="priority" string="Priority"/>
+                                <field name="priority" style="width:15%;margin-left:20%" attrs="{'readonly': [('done_creation','=',True)]}"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="purge_lines" string="Records">
+                            <field name="purge_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="columns" widget="many2many_tags" domain="[('model_id', '=', name)]"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="schedule_data_purge_tree" model="ir.ui.view">
+        <field name="name">schedule.data.purge.tree</field>
+        <field name="model">schedule.data.purging</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="execute_every"/>
+                <field name="interval_type"/>
+                <field name="days_before"/>
+                <field name="priority"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_config_data_purging" model="ir.actions.act_window">
+        <field name="name">Schedule Data Purge</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">schedule.data.purging</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Schedule Data Purge</p>
+        </field>
+    </record>
+
+    <menuitem id="config_data_purging"
+              name="Schedule Data Purge"
+              parent="multiple_order_process.config"
+              action="action_config_data_purging"
+              sequence="2"/>
+</odoo>

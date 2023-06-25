@@ -1,0 +1,64 @@
+<odoo>
+    <record id="shipment_file_report" model="ir.actions.report">
+        <field name="name">Shipment File</field>
+        <field name="model">shipment.file.wizard</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">multiple_order_process.report_shipment_file_xls</field>
+        <field name="report_file">multiple_order_process.report_shipment_file_xls</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="shipment_file_form_report" model="ir.ui.view">
+        <field name="name">Shipment File Form</field>
+        <field name="model">shipment.file.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="company" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"
+                               domain="[('is_company','=', True), ('courier_details','=', False)]"/>
+                        <field name="from_date"/>
+                        <field name="to_date"/>
+                        <field name="is_re_dispatched"/>
+                        <field name="only_re_dispatched" attrs="{'invisible': [('is_re_dispatched', '=', False)]}"/>
+                        <div attrs="{'invisible': [('is_re_dispatched', '=', False)]}" style="width:225%;border-radius:10px; padding:15px 20px 15px 20px;
+                         color: green; background-color: #FEEFB3;">
+                            <p><b>SELECTED RE-DISPATCHED !</b></p>
+                            <p>By selecting me, <br/>
+                                > If not selected any of the status listed, by default Parent Order i.e. the order status with Re-Dispatched will be printed. <br/>
+                                > Else will print with the latest child order of Re-Dispatched order for the selected status. <br/>
+                                > If not found for the selected status, wil not print any for that order.
+                            </p>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="is_wip"/>
+                        <field name="is_cancelled"/>
+                        <field name="is_dispatched"/>
+                        <field name="is_delivered"/>
+                        <field name="is_returned"/>
+<!--                        <field name="is_re_delivered" attrs="{'invisible': [('is_re_dispatched', '=', False)]}"/>-->
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate Shipment File" type="object" name="generate_shipment_file" class="btn btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_shipment_file_Wizard">
+        <field name="name">Shipment File</field>
+        <field name="res_model">shipment.file.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="shipment_file_menu"
+              name="Shipment File"
+              parent="stock.menu_warehouse_report"
+              action="action_shipment_file_Wizard"
+              sequence="200"/>
+
+</odoo>

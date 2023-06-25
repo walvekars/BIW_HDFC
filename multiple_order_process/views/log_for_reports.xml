@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="logs_report_view" model="ir.ui.view">
+        <field name="name">logs.report.view</field>
+        <field name="model">logs.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="report_name"/>
+                <field name="model_name"/>
+                <field name="record_id"/>
+                <field name='printed_by'/>
+                <field name='date_time'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="logs_report_view_form" model="ir.ui.view">
+        <field name="name">logs.report.view.form</field>
+        <field name="model">logs.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="report_name"/>
+                            <field name='printed_by'/>
+                            <field name="model_name"/>
+                        </group>
+                        <group>
+                            <field name="record_id"/>
+                            <field name='date_time'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_log_for_reports" model="ir.actions.act_window">
+        <field name="name">Log for report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">logs.report</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+
+    <menuitem id="log_reports"
+              name="Log Reports"
+              parent="base.menu_administration"
+              groups="base.group_system"
+              sequence="2"/>
+
+    <menuitem id="reports_logs"
+              name="Reports"
+              parent="log_reports"
+              action="action_log_for_reports"
+              sequence="1"/>
+
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access.choose.file,access_choose_file,records_upload.model_choose_file,,1,1,1,1
+access.select.customer,access_select_customer,records_upload.model_select_customer_wizard,,1,1,1,1

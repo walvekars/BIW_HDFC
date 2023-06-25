@@ -1,0 +1,103 @@
+<odoo>
+
+    <record id="update_rec_tree" model="ir.ui.view">
+        <field name="name">update.rec.tree</field>
+        <field name="model">update.rec</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="awb_nos"/>
+                <field name="pod_date"/>
+                <field name="person_delv"/>
+                <field name="return_date"/>
+                <field name="return_reason"/>
+                <field name="cancel_order"/>
+                <field name="cancel_date"/>
+                <field name="cancel_reason"/>
+                <field name="name"/>
+                <field name="add1"/>
+                <field name="add2"/>
+                <field name="city"/>
+                <field name="pin"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="update_master_wizard_view" model="ir.ui.view">
+        <field name="name">update.master.wizard.view</field>
+        <field name="model">update.master.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="to_update"/>
+<!--                        <group attrs="{'invisible': [('to_update','!=','returned_n_reshipped')]}">-->
+                            <!--                            <group>-->
+                            <!--                            </group>-->
+                            <!--                            <group>-->
+                            <!--                            </group>-->
+<!--                        </group>-->
+                    </group>
+<!--                    <div style="width:100%;border-radius:10px; padding:15px 20px 15px 20px;-->
+<!--                    background-repeat: no-repeat;background-position: 50px center; color: red;-->
+<!--                    background-color: #FEEFB3;" attrs="{'invisible': [('to_update','!=','returned_n_reshipped')]}">-->
+<!--                            ALERT!-->
+<!--                            <br/>-->
+<!--                            <br/>-->
+<!--                            If "ALTERNATE ADDRESS" is set to TRUE new address will be considered for Re-Dispatch.-->
+<!--                            Make sure everything is imported properly-->
+<!--                            <br/>-->
+<!--                            'COLUMNS CONSIDERED ARE: NAME, ADD1, ADD2, CITY, PINCODE, PHONE and EMAIL'-->
+<!--                            <br/>-->
+<!--                            <br/>-->
+<!--                            Else system will consider the latest address of the particular order.-->
+<!--                    </div>-->
+                </sheet>
+                <footer>
+                    <button name="update_master_action_submit" string="Submit" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_update_orders" model="ir.actions.act_window">
+        <field name="name">Update Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">update.rec</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Update Orders By Importing File Here!</p>
+        </field>
+    </record>
+
+    <record id="action_update_master_wizard" model="ir.actions.act_window">
+        <field name="name">Update To Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">update.master.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_update_to_master_sheet" model="ir.actions.server">
+        <field name="name">Update To Master</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_update_rec"/>
+        <field name="binding_model_id" ref="model_update_rec"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if record:
+                action_values = env.ref('multiple_order_process.action_update_master_wizard').sudo().read()[0]
+                action_values.update({'context': env.context})
+                action = action_values
+        </field>
+    </record>
+
+    <menuitem id="update_orders"
+              name="Update Orders"
+              parent="multiple_order_process.order_sheet"
+              action="action_update_orders"
+              sequence="4"/>
+
+</odoo>

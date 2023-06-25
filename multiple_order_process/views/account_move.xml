@@ -1,0 +1,32 @@
+<!--<odoo>-->
+<!--    <record id="vpicktree_inherit" model="ir.ui.view">-->
+<!--        <field name="name">stock.picking.tree</field>-->
+<!--        <field name="model">stock.picking</field>-->
+<!--        <field name="inherit_id" ref="stock.vpicktree"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='state']" position="before">-->
+<!--                <field name="address5" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="courier_company1" domain="[('is_company', '=', True), ('courier_details', '=', True)]"-->
+<!--                       attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="awb_number1" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="hand_off_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="hand_off_date_time" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="unique_ref" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"-->
+<!--                       context="{'invoice_with_status': True}"/>-->
+<!--                <field name="invoice_date1" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                &lt;!&ndash;                <field name="credit_note_number" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}"/>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <field name="credit_note_date" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}"/>&ndash;&gt;-->
+<!--                <field name="status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}" string="DO Status"/>-->
+<!--                <field name="order_status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
+<!--                <field name="master_link"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="attrs">{'invisible': [('picking_type_code', '=', 'outgoing')]}</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='state']" position="attributes">-->
+<!--                <attribute name="attrs">{'invisible': [('picking_type_code', '=', 'outgoing')]}</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--</odoo>-->

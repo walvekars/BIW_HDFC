@@ -1,0 +1,15 @@
+<odoo>
+    <record id="sale_order_line_view_inherit" model="ir.ui.view">
+        <field name="name">sale.order.line.view.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
+                <field name="contact_name" invisible="0" attrs="{'readonly': [('product_updatable', '=', False)]}" domain="[('is_company', '=', False), ('parent_id', '=', parent.partner_id)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

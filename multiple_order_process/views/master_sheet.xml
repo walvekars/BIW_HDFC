@@ -1,0 +1,166 @@
+<odoo>
+
+    <record id="master_sheet_tree" model="ir.ui.view">
+        <field name="name">master.sheet.tree</field>
+        <field name="model">pemt.rec</field>
+        <field name="arch" type="xml">
+            <tree create="0">
+                <field name="unique_ref"/>
+                <field name="file_name"/>
+                <field name="up_date"/>
+
+                <!--                <field name="customer"/>-->
+
+                <field name="ref_no"/>
+                <field name="customer_name"/>
+                <field name="add1"/>
+                <field name="add2"/>
+                <field name="add3"/>
+                <field name="city"/>
+                <field name="zip_code"/>
+                <field name="ph_res"/>
+                <field name="ph_off"/>
+                <field name="mobile"/>
+                <field name="email_id"/>
+                <field name="item_code"/>
+                <field name="item_desc"/>
+                <field name="global_item_code"/>
+                <field name="qty"/>
+                <field name="order_no"/>
+                <field name="delivery_id"/>
+                <field name="wip_date"/>
+                <field name="hand_off_id"/>
+                <field name="hand_off_date"/>
+                <field name="awb_nos"/>
+                <field name="dispatched_on"/>
+                <field name="courier"/>
+                <field name="pod_date"/>
+                <field name="up_pod_date"/>
+                <field name="person_delv"/>
+                <field name="return_date"/>
+                <field name="up_return_date"/>
+                <field name="return_reason"/>
+                <field name="cancel_date"/>
+                <field name="cancel_reason"/>
+                <field name="re_dispatch_update"/>
+                <field name="order_status" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="master_sheet_form" model="ir.ui.view">
+        <field name="name">master.sheet.form</field>
+        <field name="model">pemt.rec</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="order_status" widget="statusbar" clickable="1"/>
+                </header>
+                <group>
+                    <group>
+                        <field name="try_no_type" widget="badge" readonly="0"/>
+                        <field name="unique_ref" readonly="1"/>
+                        <field name="file_name" readonly="1"/>
+                        <field name="up_date" readonly="1"/>
+
+                        <!--                <field name="customer"/>-->
+
+                        <field name="ref_no" readonly="1"/>
+                        <field name="customer_name" readonly="1"/>
+                        <field name="add1"/>
+                        <field name="add2"/>
+                        <field name="add3"/>
+                        <field name="city"/>
+                        <field name="zip_code"/>
+                        <field name="ph_res"/>
+                        <field name="ph_off"/>
+                        <field name="mobile"/>
+                        <field name="email_id"/>
+                        <field name="item_code" readonly="1"/>
+                        <field name="item_desc" readonly="1"/>
+                        <field name="global_item_code" readonly="1"/>
+                        <field name="qty" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="order_no" readonly="1"/>
+                        <field name="delivery_id" readonly="1"/>
+                        <field name="wip_date" readonly="1"/>
+                        <field name="hand_off_id" readonly="1"/>
+                        <field name="hand_off_date" readonly="1"/>
+                        <field name="awb_nos" readonly="1"/>
+                        <field name="dispatched_on" readonly="1"/>
+                        <field name="courier" readonly="1"/>
+                        <field name="pod_date" readonly="1"/>
+                        <field name="up_pod_date" readonly="1"/>
+                        <field name="person_delv" readonly="1"/>
+                        <field name="return_date" readonly="1"/>
+                        <field name="up_return_date" readonly="1"/>
+                        <field name="return_reason" readonly="1"/>
+                        <field name="cancel_date" readonly="1"/>
+                        <field name="cancel_reason" readonly="1"/>
+                        <field name="re_dispatch_update" readonly="1"/>
+                    </group>
+                </group>
+                <field name="try_lines" readonly="0">
+                    <tree name="multi_tries" string="RE-DISPATCH LIES" editable="bottom">
+                        <field name="try_no_type" widget="badge"/>
+<!--                        <field name="parent_line"/>-->
+                        <field name="order_no"/>
+                        <field name="delivery_id"/>
+                        <field name="wip_date"/>
+                        <field name="hand_off_id"/>
+                        <field name="hand_off_date"/>
+                        <field name="awb_nos"/>
+                        <field name="dispatched_on"/>
+                        <field name="courier"/>
+                        <field name="pod_date"/>
+                        <field name="up_pod_date"/>
+                        <field name="person_delv"/>
+                        <field name="return_date"/>
+                        <field name="up_return_date"/>
+                        <field name="return_reason"/>
+                        <field name="cancel_date"/>
+                        <field name="cancel_reason"/>
+                        <field name="re_dispatch_update"/>
+                        <field name="order_status" widget="badge"/>
+                    </tree>
+                </field>
+            </form>
+        </field>
+    </record>
+
+    <record id="pemt_rec_search" model="ir.ui.view">
+        <field name="name">pemt.rec.search</field>
+        <field name="model">pemt.rec</field>
+        <field name="arch" type="xml">
+            <search string="Search Master">
+                <field name="unique_ref" string="Unique Reference" filter_domain="[('unique_ref','ilike', self)]"/>
+                <field name="ref_no" string="Reference Number" filter_domain="[('ref_no','ilike', self)]"/>
+                <field name="order_no" string="Sale Order Number" filter_domain="[('order_no','ilike', self)]"/>
+                <field name="hand_off_id" string="Hand Off ID" filter_domain="[('hand_off_id','ilike', self)]"/>
+                <field name="awb_nos" string="AWB Number" filter_domain="[('awb_nos','ilike', self)]"/>
+                <field name="courier" string="Courier" filter_domain="[('courier','ilike', self)]"/>
+                <field name="order_status" string="Status" filter_domain="[('order_status','ilike', self)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_master_sheet" model="ir.actions.act_window">
+        <field name="name">Fresh Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pemt.rec</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('try_no_type', '=', 0)]</field>
+        <field name="context">{'custom_name': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Processed Orders Reflects Here!</p>
+        </field>
+    </record>
+
+    <menuitem id="fresh_orders"
+              name="Fresh Orders"
+              parent="multiple_order_process.order_sheet"
+              action="action_master_sheet"
+              sequence="2"/>
+
+</odoo>

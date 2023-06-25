@@ -1,0 +1,12 @@
+<odoo>
+
+    <record id="validation_report" model="ir.actions.report">
+        <field name="name">Validated Error report</field>
+        <field name="model">temp.rec</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">multiple_order_process.report_validation_xls</field>
+        <field name="report_file">multiple_order_process.report_validation_xls</field>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>
