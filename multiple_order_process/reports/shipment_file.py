@@ -21,7 +21,6 @@ class ShipmentFileWizard(models.TransientModel):
 
     @api.onchange('is_re_dispatched')
     def set_false(self):
-        self.is_re_delivered = False
         self.only_re_dispatched = False
 
 class ShipmentReport(models.AbstractModel):
@@ -77,7 +76,7 @@ class ShipmentReport(models.AbstractModel):
 
         pemt_rec = self.env['pemt.rec'].search([])
         for rec in pemt_rec:
-            if rec.customer_name.parent_id == lines.company and lines.from_date <= rec.up_date <= lines.to_date and rec.order_status in requested_status and rec.try_no_type == '0':
+            if rec.customer_name.parent_id == lines.company and lines.from_date <= rec.up_date <= lines.to_date and rec.try_no_type == '0' and rec.order_status in requested_status and rec.try_no_type == '0':
                 if 'only_re_dispatched' not in requested_status:
                     sheet.write(row + 1, col, rec.ref_no)
                     sheet.write(row + 1, col + 1, rec.item_code)
@@ -111,101 +110,91 @@ class ShipmentReport(models.AbstractModel):
                     row += 1
 
                 if 'only_re_dispatched' in requested_status:
-                    print(rec.try_lines, "lllllllllllllllll")
                     tries_list = []
                     for sub_rec in rec.try_lines:
                         tries_list.append(int(sub_rec.try_no_type))
                     for child_rec in rec.try_lines:
                         if child_rec.try_no_type == str(max(tries_list)):
-                            print(child_rec.try_no_type)
-                            if child_rec.order_status in requested_status:
-                                print(child_rec.order_status)
-                                sheet.write(row + 1, col, child_rec.ref_no)
-                                sheet.write(row + 1, col + 1, child_rec.item_code)
-                                sheet.write(row + 1, col + 2, child_rec.item_desc)
-                                sheet.write(row + 1, col + 3, child_rec.qty)
-                                if rec.awb_nos:
-                                    sheet.write(row + 1, col + 4, rec.awb_nos.awb_number)
-                                if rec.dispatched_on:
-                                    sheet.write(row + 1, col + 5, rec.dispatched_on)
-                                if rec.person_delv:
-                                    sheet.write(row + 1, col + 6, rec.person_delv)
-                                if rec.pod_date:
-                                    sheet.write(row + 1, col + 7, rec.pod_date)
-                                if rec.return_reason:
-                                    sheet.write(row + 1, col + 8, rec.return_reason)
-                                if child_rec.awb_nos:
-                                    sheet.write(row + 1, col + 9, child_rec.awb_nos.awb_number)
-                                if child_rec.dispatched_on:
-                                    sheet.write(row + 1, col + 10, child_rec.dispatched_on)
-                                if child_rec.pod_date:
-                                    sheet.write(row + 1, col + 11, child_rec.pod_date)
-                                if child_rec.person_delv:
-                                    sheet.write(row + 1, col + 12, child_rec.person_delv)
-                                if child_rec.order_status == 'wip' or child_rec.order_status == 'hand_off' or child_rec.order_status == 'ready' or child_rec.order_status == 'not_serviceable':
-                                    sheet.write(row + 1, col + 13, 'WIP')
-                                if child_rec.order_status == 'cancelled':
-                                    sheet.write(row + 1, col + 13, 'Cancelled')
-                                if child_rec.order_status == 'dispatched':
-                                    sheet.write(row + 1, col + 13, 'Dispatched')
-                                if child_rec.order_status == 'delivered':
-                                    sheet.write(row + 1, col + 13, 'Re-Delivered')
-                                if child_rec.order_status == 'returned':
-                                    sheet.write(row + 1, col + 13, 'Returned')
-                                if child_rec.awb_nos:
-                                    sheet.write(row + 1, col + 17, child_rec.awb_nos.serviced_awb_link.name)
 
-                                row += 1
-
-
-
+                            if requested_status == ['re_dispatched', 'only_re_dispatched']:
+                                if child_rec.order_status == False:
+                                    sheet.write(row + 1, col, child_rec.ref_no)
+                                    sheet.write(row + 1, col + 1, child_rec.item_code)
+                                    sheet.write(row + 1, col + 2, child_rec.item_desc)
+                                    sheet.write(row + 1, col + 3, child_rec.qty)
+                                    if rec.awb_nos:
+                                        sheet.write(row + 1, col + 4, rec.awb_nos.awb_number)
+                                    if rec.dispatched_on:
+                                        sheet.write(row + 1, col + 5, rec.dispatched_on)
+                                    if rec.person_delv:
+                                        sheet.write(row + 1, col + 6, rec.person_delv)
+                                    if rec.pod_date:
+                                        sheet.write(row + 1, col + 7, rec.pod_date)
+                                    if rec.return_reason:
+                                        sheet.write(row + 1, col + 8, rec.return_reason)
+                                    if child_rec.awb_nos:
+                                        sheet.write(row + 1, col + 9, child_rec.awb_nos.awb_number)
+                                    if child_rec.dispatched_on:
+                                        sheet.write(row + 1, col + 10, child_rec.dispatched_on)
+                                    if child_rec.pod_date:
+                                        sheet.write(row + 1, col + 11, child_rec.pod_date)
+                                    if child_rec.person_delv:
+                                        sheet.write(row + 1, col + 12, child_rec.person_delv)
+                                    if child_rec.order_status == 'wip' or child_rec.order_status == 'hand_off' or child_rec.order_status == 'ready' or child_rec.order_status == 'not_serviceable':
+                                        sheet.write(row + 1, col + 13, 'WIP')
+                                    if child_rec.order_status == 'cancelled':
+                                        sheet.write(row + 1, col + 13, 'Cancelled')
+                                    if child_rec.order_status == 'dispatched':
+                                        sheet.write(row + 1, col + 13, 'Dispatched')
+                                    if child_rec.order_status == 'delivered':
+                                        sheet.write(row + 1, col + 13, 'Re-Delivered')
+                                    if child_rec.order_status == 'returned':
+                                        sheet.write(row + 1, col + 13, 'Returned')
+                                    if child_rec.order_status == 're_dispatched':
+                                        sheet.write(row + 1, col + 13, 'Re-Dispatched')
+                                    if child_rec.awb_nos:
+                                        sheet.write(row + 1, col + 17, child_rec.awb_nos.serviced_awb_link.name)
+                                    row += 1
 
 
+                            else:
+                                print(rec, child_rec, "plllololololo")
+                                if child_rec.order_status in requested_status:
+                                    sheet.write(row + 1, col, child_rec.ref_no)
+                                    sheet.write(row + 1, col + 1, child_rec.item_code)
+                                    sheet.write(row + 1, col + 2, child_rec.item_desc)
+                                    sheet.write(row + 1, col + 3, child_rec.qty)
+                                    if rec.awb_nos:
+                                        sheet.write(row + 1, col + 4, rec.awb_nos.awb_number)
+                                    if rec.dispatched_on:
+                                        sheet.write(row + 1, col + 5, rec.dispatched_on)
+                                    if rec.person_delv:
+                                        sheet.write(row + 1, col + 6, rec.person_delv)
+                                    if rec.pod_date:
+                                        sheet.write(row + 1, col + 7, rec.pod_date)
+                                    if rec.return_reason:
+                                        sheet.write(row + 1, col + 8, rec.return_reason)
+                                    if child_rec.awb_nos:
+                                        sheet.write(row + 1, col + 9, child_rec.awb_nos.awb_number)
+                                    if child_rec.dispatched_on:
+                                        sheet.write(row + 1, col + 10, child_rec.dispatched_on)
+                                    if child_rec.pod_date:
+                                        sheet.write(row + 1, col + 11, child_rec.pod_date)
+                                    if child_rec.person_delv:
+                                        sheet.write(row + 1, col + 12, child_rec.person_delv)
+                                    if child_rec.order_status == 'wip' or child_rec.order_status == 'hand_off' or child_rec.order_status == 'ready' or child_rec.order_status == 'not_serviceable':
+                                        sheet.write(row + 1, col + 13, 'WIP')
+                                    if child_rec.order_status == 'cancelled':
+                                        sheet.write(row + 1, col + 13, 'Cancelled')
+                                    if child_rec.order_status == 'dispatched':
+                                        sheet.write(row + 1, col + 13, 'Dispatched')
+                                    if child_rec.order_status == 'delivered':
+                                        sheet.write(row + 1, col + 13, 'Re-Delivered')
+                                    if child_rec.order_status == 'returned':
+                                        sheet.write(row + 1, col + 13, 'Returned')
+                                    if child_rec.order_status == 're_dispatched':
+                                        sheet.write(row + 1, col + 13, 'Re-Dispatched')
+                                    if child_rec.awb_nos:
+                                        sheet.write(row + 1, col + 17, child_rec.awb_nos.serviced_awb_link.name)
 
-                #     print(rec.try_lines)
-                #     tries_list = []
-                #     for sub_rec in rec.try_lines:
-                #         tries_list.append(int(sub_rec.try_no_type))
-                #     for child_rec in rec.try_lines:
-                #         if child_rec.try_no_type == str(max(tries_list)):
-                #             print(child_rec.try_no_type)
-                #             if child_rec.order_status in requested_status:
-                #                 print(child_rec.order_status)
-                #                 sheet.write(row + 1, col, child_rec.ref_no)
-                #                 sheet.write(row + 1, col + 1, child_rec.item_code)
-                #                 sheet.write(row + 1, col + 2, child_rec.item_desc)
-                #                 sheet.write(row + 1, col + 3, child_rec.qty)
-                #                 if rec.awb_nos:
-                #                     sheet.write(row + 1, col + 4, rec.awb_nos.awb_number)
-                #                 if rec.dispatched_on:
-                #                     sheet.write(row + 1, col + 5, rec.dispatched_on)
-                #                 if rec.person_delv:
-                #                     sheet.write(row + 1, col + 6, rec.person_delv)
-                #                 if rec.pod_date:
-                #                     sheet.write(row + 1, col + 7, rec.pod_date)
-                #                 if rec.return_reason:
-                #                     sheet.write(row + 1, col + 8, rec.return_reason)
-                #                 if child_rec.awb_nos:
-                #                     sheet.write(row + 1, col + 9, child_rec.awb_nos.awb_number)
-                #                 if child_rec.dispatched_on:
-                #                     sheet.write(row + 1, col + 10, child_rec.dispatched_on)
-                #                 if child_rec.pod_date:
-                #                     sheet.write(row + 1, col + 11, child_rec.pod_date)
-                #                 if child_rec.person_delv:
-                #                     sheet.write(row + 1, col + 12, child_rec.person_delv)
-                #                 if child_rec.order_status == 'wip' or child_rec.order_status == 'hand_off' or child_rec.order_status == 'ready' or child_rec.order_status == 'not_serviceable':
-                #                     sheet.write(row + 1, col + 13, 'WIP')
-                #                 if child_rec.order_status == 'cancelled':
-                #                     sheet.write(row + 1, col + 13, 'Cancelled')
-                #                 if child_rec.order_status == 'dispatched':
-                #                     sheet.write(row + 1, col + 13, 'Dispatched')
-                #                 if child_rec.order_status == 'delivered':
-                #                     sheet.write(row + 1, col + 13, 'Re-Delivered')
-                #                 if child_rec.order_status == 'returned':
-                #                     sheet.write(row + 1, col + 13, 'Returned')
-                #                 if child_rec.awb_nos:
-                #                     sheet.write(row + 1, col + 17, child_rec.awb_nos.serviced_awb_link.name)
-                # if rec.awb_nos:
-                #     sheet.write(row + 1, col + 17, rec.awb_nos.serviced_awb_link.name)
-
-                # row += 1
+                                    row += 1

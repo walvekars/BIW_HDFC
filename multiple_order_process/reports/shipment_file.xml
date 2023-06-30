@@ -21,15 +21,15 @@
                         <field name="to_date"/>
                         <field name="is_re_dispatched"/>
                         <field name="only_re_dispatched" attrs="{'invisible': [('is_re_dispatched', '=', False)]}"/>
-                        <div attrs="{'invisible': [('is_re_dispatched', '=', False)]}" style="width:225%;border-radius:10px; padding:15px 20px 15px 20px;
-                         color: green; background-color: #FEEFB3;">
-                            <p><b>SELECTED RE-DISPATCHED !</b></p>
-                            <p>By selecting me, <br/>
-                                > If not selected any of the status listed, by default Parent Order i.e. the order status with Re-Dispatched will be printed. <br/>
-                                > Else will print with the latest child order of Re-Dispatched order for the selected status. <br/>
-                                > If not found for the selected status, wil not print any for that order.
-                            </p>
-                        </div>
+<!--                        <div attrs="{'invisible': [('is_re_dispatched', '=', False)]}" style="width:225%;border-radius:10px; padding:15px 20px 15px 20px;-->
+<!--                         color: green; background-color: #FEEFB3;">-->
+<!--                            <p><b>SELECTED RE-DISPATCHED !</b></p>-->
+<!--                            <p>By selecting me, <br/>-->
+<!--                                > If not selected any of the status listed, by default Parent Order i.e. the order status with Re-Dispatched will be printed. <br/>-->
+<!--                                > Else will print with the latest child order of Re-Dispatched order for the selected status. <br/>-->
+<!--                                > If not found for the selected status, wil not print any for that order.-->
+<!--                            </p>-->
+<!--                        </div>-->
                     </group>
                     <group>
                         <field name="is_wip"/>
@@ -37,7 +37,6 @@
                         <field name="is_dispatched"/>
                         <field name="is_delivered"/>
                         <field name="is_returned"/>
-<!--                        <field name="is_re_delivered" attrs="{'invisible': [('is_re_dispatched', '=', False)]}"/>-->
                     </group>
                 </group>
                 <footer>

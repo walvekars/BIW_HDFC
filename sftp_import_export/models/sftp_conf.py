@@ -92,7 +92,7 @@ class ConfigSFTP(models.Model):
         return
 
     def test_sftp_connection(self, context=None):
-        sftp_model = self.env['sftp.model'].search([])
+        sftp_model = self.env['config.sftp'].search([])
         sftp_model.ensure_one()
 
         # Check if there is a success or fail and write messages
@@ -106,17 +106,14 @@ class ConfigSFTP(models.Model):
         # Connect with external server over SFTP, so we know sure that everything works.
         try:
             pmcpl = '/home/suprit-s/Documents/odoo-15.0/custom_addons/BI-Worldwide_SCM/records_upload/static/src/keys/identity.pem'
-            # print(pmcpl)
             biw = '../data/odoo/custom/BI - Worldwide_SCM/records_upload/static/src/keys/600101558_pvt.pem'
-            # print(biw)
 
             if not sftp_model.password:
-                print("Without Password")
-                sftp_client = pysftp.Connection(host=sftp_model.hostname, port=sftp_model.port, username=sftp_model.username, private_key=biw, private_key_pass=sftp_model.passphrase, cnopts=cnopts)
+                sftp_client = pysftp.Connection(host=sftp_model.hostname, port=sftp_model.port, username=sftp_model.username)
             else:
-                print("With Password")
-                sftp_client = pysftp.Connection(host=sftp_model.hostname, port=sftp_model.port, username=sftp_model.username, private_key=biw, private_key_pass=sftp_model.passphrase, cnopts=cnopts)
-                sftp_client.execute(str(sftp_model.password))
+                # sftp_client = pysftp.Connection(host=sftp_model.hostname, port=sftp_model.port, username=sftp_model.username, private_key=biw, private_key_pass=sftp_model.passphrase, cnopts=cnopts)
+                sftp_client = pysftp.Connection(host=sftp_model.hostname, port=sftp_model.port, username=sftp_model.username, password=sftp_model.password)
+                # sftp_client.execute(str(sftp_model.password))
 
             sftp_client.close()
             message_title = _("Connection Test Succeeded!\nEverything seems properly set up for SFTP Transfer!")
@@ -125,7 +122,7 @@ class ConfigSFTP(models.Model):
             error += str(e)
             has_failed = True
             message_title = _("Connection Test Failed!")
-            if len(sftp_model.hostname) < 8:
+            if sftp_model.hostname == False or len(sftp_model.hostname) < 8:
                 message_content += "\nYour IP address seems to be too short.\n"
             message_content += _("Here is what we got instead:\n")
         # finally:
@@ -133,7 +130,7 @@ class ConfigSFTP(models.Model):
         #         sftp_client.close()
 
         if has_failed:
-            raise UserError(message_title + '\n\n' + message_content + "%s" % str(error))
+            raise UserError(message_title + '\n' + message_content + "%s" % str(error))
         else:
             return {
                 'type': 'ir.actions.client',
