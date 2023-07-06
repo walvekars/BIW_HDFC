@@ -3,7 +3,6 @@ from odoo import models, fields, api, _
 from pathlib import Path
 import os, base64, tempfile, binascii, xlrd
 import datetime
-import pandas as pd
 from odoo.exceptions import UserError, ValidationError
 
 class company_sign(models.Model):
