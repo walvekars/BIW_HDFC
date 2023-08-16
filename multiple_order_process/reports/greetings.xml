@@ -1,0 +1,171 @@
+<odoo>
+    <template id="report_greetings_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o.picking_type_code == 'outgoing'">
+                    <div style="page-break-inside: avoid">
+                        <div style="font-size:17px;">
+                            <t t-esc="context_timestamp(datetime.datetime.now())"
+                               t-options="{'widget': 'date', 'format': 'MM/dd/yyyy'}"/>
+                            <br/>
+                        </div>
+                        <br/>
+                        <br/>
+                        <div style="font-size:17px;">
+                            Dear
+                            <span t-field="o.partner_id.name"/>
+                            <br/>
+                        </div>
+                        <br/>
+                        <!--                    <div style="font-size:17px;">-->
+                        <!--                        <span t-field="o.partner_id.street"/>-->
+                        <!--                        <br/>-->
+                        <!--                        <span t-field="o.partner_id.street2"/>-->
+                        <!--                        <br/>-->
+                        <!--                        <span t-field="o.partner_id.city"/>-->
+                        <!--                        - -->
+                        <!--                        <span t-field="o.partner_id.zip"/>-->
+                        <!--                        <br/>-->
+                        <!--                    </div>-->
+                        <br/>
+                        <div style="font-size:17px;">
+                            Reg: MyRewards Program
+                            <br/>
+                        </div>
+                        <br/>
+                        <!--                    <div style="font-size:17px;">-->
+                        <!--                        Dear-->
+                        <!--                        <span t-field="o.partner_id.name"/>-->
+                        <!--                        <br/>-->
+                        <!--                    </div>-->
+                        <br/>
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            We are hereby enclosing the requested gifts/vouchers along with this letter. Please note
+                            that
+                            your redemption request reference number is
+                            <span t-field="o.unique_ref.ref_no"/>
+                            <span t-esc="o.greeting_log()"/>
+                        </div>
+                        <br/>
+                        <table style="font-size:17px; text-align: center; border:1pt solid black; border-collapse:collapse; width:100%">
+                            <tr style="border:1pt solid black">
+                                <td style="border:1pt solid black">Item Code</td>
+                                <td style="border:1pt solid black">Item Description</td>
+                                <td style="border:1pt solid black">Quantity (No's)</td>
+                            </tr>
+                            <t t-foreach="o.move_ids_without_package" t-as="move_line">
+                                <tr style="border:1pt solid black">
+                                    <td style="padding: 15px; border:1pt solid black">
+                                        <t t-esc="o.unique_ref.item_code"/>
+                                    </td>
+                                    <td style="padding: 15px; border:1pt solid black">
+                                        <span t-field="move_line.product_id.name"/>
+                                    </td>
+                                    <td style="padding: 15px; border:1pt solid black">
+                                        <t t-if="round(move_line.product_uom_qty!=0)">
+                                            <span t-esc="round(move_line.product_uom_qty)"/>
+                                        </t>
+                                        <t t-else="round(move_line.product_uom_qty==0)">
+                                            <span t-esc="round(move_line.qty_done)"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <br/>
+                        <br/>
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            Important terms &amp; Conditions of My Reward program:
+                        </div>
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            <ol>
+                                <li>Redemption Requests once made cannot be cancelled</li>
+                                <li>In case of redeeming Gift Vouchers, please use the vouchers within validity period
+                                    mentioned on voucher. HDFC Bank will not be able or liable to replace/validate
+                                    voucher
+                                    usage/seek validity extension from the Merchant
+                                </li>
+                                <li>In case of damage of items during transit DR wrong item sent OR difference in
+                                    request
+                                    &amp; items received, etc, please contact HDFC Bank at any of our Customer Call
+                                    Centre
+                                    Numbers mentioned below or mail: customerservices.cards@hdfcbank.com within 7 days
+                                    of
+                                    receipt of gift item/voucher. HDFC Bank will not be able or liable to pick up or
+                                    replace
+                                    the items, if query is raised beyond this 7
+                                    day period.
+                                </li>
+                                <li>All descriptions and features mentioned by HDFC Bank are as confirmed by the
+                                    manufacturers on the date of listing on catalogueHDFC Bank offers the products on a
+                                    best
+                                    effort basis &amp; the Bank cannot be held liable for any dispute arising on product
+                                    features or performance.
+                                </li>
+                                <li>Disputes if any arising out of the product or usage of the same needs to be taken up
+                                    with the manufacturer of the product.
+                                </li>
+                                <li>Colors &amp; Features of the redeemed product dispatched are subject to change basis
+                                    stock availability.
+                                </li>
+                            </ol>
+                        </div>
+                        <br/>
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            Disclaimer: Incase of Gift voucher please do not disclose the voucher code via email/phon
+                            call
+                            in any circumstances.
+                            <br/>
+                            Please refer to the complete MyRewards Terms &amp; Conditions by visiting the following path
+                            -
+                            www.hdfcbank.com ->Products >Cards->Credit Cards Rewards Program
+                            <br/>
+                            <br/>
+                            It has been a privilege to have been of service to you. In case of any discrepancy in the
+                            gift/voucher received, request you to intimate the bank immediately
+                        </div>
+                        <br/>
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            Warm Regards.
+                        </div>
+                        <!--                    <br/>-->
+                        <!--                    <div>-->
+                        <!--                        <img t-if="o.company_id.sign"-->
+                        <!--                             t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.sign)" height="75pt"-->
+                        <!--                             width="100pt"/>-->
+                        <!--                    </div>-->
+                        <div style="font-size:17px; text-align: justify; text-justify: inter-word;">
+                            The MyRewards Team,
+                            <br/>
+                            HDFC Bank Credit Cards.
+                            <br/>
+                            (This is a system generated letter hence signature not required)
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_greetings_report" model="ir.actions.report">
+        <field name="name">Greetings</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">multiple_order_process.report_greetings_report</field>
+        <field name="report_file">multiple_order_process.report_greetings_report</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="res_company_inherit_sign" model="ir.ui.view">
+        <field name="name">res.company.inherit.sign</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='logo']" position="before">
+                <field name="sign" widget="image" class="oe_avatar"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

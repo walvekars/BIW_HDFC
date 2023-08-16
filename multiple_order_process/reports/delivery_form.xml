@@ -1,0 +1,217 @@
+<odoo>
+    <template id="report_delivery_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o.picking_type_code == 'outgoing'">
+                    <div class="page" style="page-break-before: always;">
+                        <br></br>
+                        <table style="width:100mm; border: 1pt solid black; border-collapse: collapse;">
+                            <tr>
+                                <td colspan="5"
+                                    style="width:100mm; padding-top: 2mm; padding-left: 5mm; text-align:center;">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
+                                         height="45px"
+                                         width="70px" float="right" align="right" style="padding-right: 2mm;"/>
+                                    <span style="font-size:12px;" t-field="o.company_id.name"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street2"/>,
+                                    <span style="font-size:12px;" t-field="o.company_id.city"/>-
+                                    <span style="font-size:12px;" t-field="o.company_id.zip"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="width:80mm; padding-right: 9mm; text-align:right;">
+                                    <strong>
+                                        <span style="font-size:11px;">DECLARATION FORM</span>
+                                    </strong>
+                                </td>
+                                <td style="width:20mm; padding-right: 5mm; text-align:right;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="width:100mm; border: 1pt solid black; text-align:center;">
+                                    <span style="font-size:12px;">
+                                        <t t-esc="o.courier_company.courier_company.name"/>:
+                                        <t t-esc="o.courier_company.courier_company.courier_account_number"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="text-align:center;">
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span style="font-size:12px;">MAA</span>
+                                </td>
+                                <td colspan="3" rowspan="2" style="width:60mm; border: 1pt solid black;">
+                                    <t t-set="barcode_size" t-value="'width:50mm;height:13mm'"/>
+                                    <div t-out="o.awb_number.awb_number"
+                                         t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': barcode_size}"/>
+                                    <span style="font-size:11px; text-align:center;" t-out="o.awb_number.awb_number"/>
+                                </td>
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span style="font-size:12px; text-align:center;">
+                                        <t t-esc="o.courier_company.airport"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="text-align:center;">
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span style="font-size:12px;">MAA</span>
+                                </td>
+                                <td style="width:20mm; border: 1pt solid black">
+                                    <span style="font-size:12px;">
+                                        <t t-esc="o.courier_company.hub"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="text-align:left;">
+                                <td colspan="3" style="width:60mm; border: 1pt solid black; padding: 2mm;">
+                                    <div style="font-size:11px;">
+                                        To,
+                                        <br/>
+                                        <span t-esc="o.partner_id.name[0:25]"/>
+                                        <span t-esc="o.partner_id.name[25:50]"/>
+                                        <br/>
+                                        <span t-esc="o.partner_id.street[0:25]"/>
+                                        <span t-esc="o.partner_id.street[25:50]"/>
+                                        <span t-esc="o.partner_id.street[50:75]"/>
+                                        <br/>
+                                        <span t-esc="o.partner_id.street2[0:25]"/>
+                                        <span t-esc="o.partner_id.street2[25:50]"/>
+                                        <span t-esc="o.partner_id.street2[50:75]"/>
+                                        <br/>
+                                        <span t-field="o.partner_id.city"/>
+                                        -
+                                        <span t-field="o.partner_id.zip"/>
+                                        <br/>
+                                        <span t-field="o.partner_id.state_id"/>
+                                        <br/>
+
+                                        <t t-if="not o.partner_id.name[25:50]">
+                                            <br/>
+                                        </t>
+                                        <t t-if="not o.partner_id.street[25:45]">
+                                            <br/>
+                                        </t>
+                                        <t t-if="not o.partner_id.street[45:65]">
+                                            <br/>
+                                        </t>
+                                        <t t-if="not o.partner_id.street2[25:45]">
+                                            <br/>
+                                        </t>
+                                        <t t-if="not o.partner_id.street2[45:65]">
+                                            <br/>
+                                        </t>
+
+                                        <strong>Phone:
+                                            <t t-esc="o.partner_id.mobile or o.partner_id.phone"/>
+                                        </strong>
+                                    </div>
+                                </td>
+                                <td colspan="2"
+                                    style="width:20mm; border: 1pt solid black; font-size:11px; padding: 2mm;">
+                                    Order No:
+                                    <t t-esc="o.unique_ref.ref_no"/>
+                                    <br/>
+                                    <br/>
+                                    BIW Ref No:
+                                    <t t-esc="o.unique_ref.unique_ref"/>
+                                    <br/>
+                                    <br/>
+                                    Handoff ID:
+                                    <t t-esc="o.hand_off_id"/>
+                                    <br/>
+                                    <br/>
+                                    Client Ref:
+                                    <t t-esc="o.unique_ref.item_code"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="width:100mm; border: 1pt solid black; text-align:center;">
+                                    <span style="font-size:12px;">This consignment from BI Wordwide is a gift and does
+                                        not
+                                        carry commercial value.
+                                        <t t-esc="o.delivery_form_log()"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="font-size:12px; text-align:center;">
+                                <td colspan="2" style="width:40mm; border: 1pt solid black;">
+                                    <span>Product Code</span>
+                                </td>
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span>Qty</span>
+                                </td>
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span>MRP</span>
+                                </td>
+                                <td style="width:20mm; border: 1pt solid black;">
+                                    <span>Total Value</span>
+                                </td>
+                            </tr>
+                            <t t-foreach="o.move_ids_without_package" t-as="move_line">
+                                <tr style="font-size:12px; padding: 2mm;">
+                                    <td colspan="2" style="width:40mm; border: 1pt solid black; text-align:center;">
+                                        <t t-if="move_line.product_id.default_code">
+                                            <t t-esc="move_line.product_id.default_code"/>
+                                        </t>
+                                    </td>
+
+                                    <td style="width:20mm; border: 1pt solid black; text-align:center;">
+                                        <span t-esc="round(move_line.product_uom_qty)"/>
+                                    </td>
+                                    <td style="width:20mm; border: 1pt solid black; text-align:center;">
+                                        <span t-esc="round(move_line.product_id.mrp_field)"/>
+                                    </td>
+                                    <td style="width:20mm; border: 1pt solid black; text-align:center;">
+                                        <t t-esc="round(move_line.product_uom_qty * move_line.product_id.mrp_field)"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr style="font-size:12px;">
+                                <td colspan="5" style="width:60mm; padding: 2mm;">
+                                    GST IN:
+                                    <span t-field="o.company_id.vat"/>
+                                </td>
+                            </tr>
+                            <tr style="font-size:9px;">
+                                <td colspan="5" style="width:60mm; padding: 2mm;">
+                                    All the terms &amp; conditions of respective combines &amp; BI Worldwide apply
+                                    Subject to Chennai Jurisdiction only. E. &amp; O.E. This is a computer generated
+                                    challan
+                                    and does not require signature.
+                                </td>
+                            </tr>
+                            <tr style="font-size:9px;">
+                                <td colspan="5"
+                                    style="width:60mm; padding: 2mm; text-align:center; border: 1pt Solid Black">
+                                    If Undelivered, Return to:
+                                    <br/>
+                                    <br/>
+                                    BI Worldwide India Private Limited
+                                    <br/>
+                                    Door No.8 &amp; 8A, DRR Avenue, Audco Nagar,
+                                    <br/>
+                                    Kattupakkam, Chennai 600056.
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_report_delivery_form" model="ir.actions.report">
+        <field name="name">Delivery Form</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">multiple_order_process.report_delivery_form</field>
+        <field name="report_file">multiple_order_process.report_delivery_form</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

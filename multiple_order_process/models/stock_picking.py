@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import datetime
-
+import datetime, cups
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-
+from num2words import num2words
 
 class StockPickingEnhanced(models.Model):
     _inherit = 'stock.picking'
@@ -32,13 +31,51 @@ class StockPickingEnhanced(models.Model):
     credit_note_date = fields.Date(string='Credit Note Date', related='credit_note_number.invoice_date', readonly=1, store=True)
     return_order = fields.Many2one('stock.picking', string='Return Order', readonly=1)
 
+    def name_get(self):
+        res = []
+        for lines in self:
+            if self.env.context.get('hand_off_id'):
+                res.append((lines.id, '%s' % lines.hand_off_id))
+            else:
+                res.append((lines.id, '%s' % lines.name))
+        return res
+
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=True, submenu=False):
+        ref_id = self.env.ref('multiple_order_process.action_report_delivery_form_printer').id
+        ref_id1 = self.env.ref('multiple_order_process.action_report_greetings_template_printer').id
+        result = super(StockPickingEnhanced, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+
+        if view_type == 'tree' and result.get('arch'):
+            toolbar = result['toolbar']
+            actions = toolbar['action']
+            print_op = toolbar['print']
+
+            for i in actions:
+                if (i['id'] == ref_id1):
+                    print_op.append(i)
+                    toolbar['print'] = print_op
+                    actions.remove(i)
+                    toolbar['action'] = actions
+                    result['toolbar'] = toolbar
+            actions = toolbar['action']
+
+            for i in actions:
+                if (i['id'] == ref_id):
+                    print_op.append(i)
+                    toolbar['print'] = print_op
+                    actions.remove(i)
+                    toolbar['action'] = actions
+                    result['toolbar'] = toolbar
+
+        return result
+
     @api.constrains('partner_id')
     def created_do_order(self):
         for rec in self:
             if rec.picking_type_code == 'outgoing':
                 rec.partner_id.unique_ref.delivery_id = rec.id
 
-    @api.constrains('state')
+    @api.constrains('state', 'move_ids_without_package.forecast_availability')
     def order_status_sync(self):
         for rec in self:
             if rec.picking_type_code == 'outgoing':
@@ -49,13 +86,13 @@ class StockPickingEnhanced(models.Model):
                     # rec.partner_id.unique_ref.wip_date = datetime.datetime.now()
                 if rec.state == 'confirmed':
                     rec.order_status = 'wip'
-                if rec.state == 'assigned':
-                    rec.order_status = 'ready'
+                if rec.move_ids_without_package.forecast_availability == rec.move_ids_without_package.product_uom_qty:
+                    if rec.state == 'assigned':  # Ready
+                        rec.order_status = 'ready'
                 if rec.state == 'done':
                     rec.order_status = 'dispatched'
                 if rec.state == 'cancel':
                     rec.order_status = 'cancelled'
-
 
     def confirm_hand_off(self):
         courier_priority = self.env['courier.priority'].search([])
@@ -128,7 +165,64 @@ class StockPickingEnhanced(models.Model):
             else:
                 return super(StockPickingEnhanced, self).button_validate()
 
+    def delivery_form_log(self):
+        a = self.env.user.name
+        log_report = self.env['logs.report'].search([])
+        log_report.create({
+            'report_name': "Delivery form",
+            'record_id': self.id,
+            'model_name': self.env['ir.model']._get(self._name).id,
+            'printed_by': a,
+            'date_time': datetime.datetime.now()
+        })
 
+    def greeting_log(self):
+        a = self.env.user.name
+        log_report = self.env['logs.report'].search([])
+        log_report.create({
+            'report_name': "Greetings Template",
+            'record_id': self.id,
+            'model_name': self.env['ir.model']._get(self._name).id,
+            'printed_by': a,
+            'date_time': datetime.datetime.now()
+        })
+
+    def total(self):
+        total = 0
+        for rec in self:
+            total = total + (rec.unique_ref.qty * rec.unique_ref.global_item_code.mrp_field)
+            return total
+
+    def amt_to_text(self, total):
+        amt_txt = num2words(total)
+        return amt_txt.title()
+
+    def delivery_form_printing(self):
+        active_ids = self.env.context.get('active_ids', {})
+
+        file, file_type = self.env.ref('multiple_order_process.action_report_delivery_form')._render_qweb_pdf(res_ids=active_ids)
+
+        conn = cups.Connection()
+        f = open('Delivery Form.pdf', 'wb')
+        f.write(file)
+        f.close()
+        printers = conn.getPrinters()
+        for printer_name in printers:
+            if printer_name:
+                conn.printFile(printer_name, 'Delivery Form.pdf', '', {})
+
+    def greetings_template_printing(self):
+        active_ids = self.env.context.get('active_ids', {})
+
+        file, file_type = self.env.ref('multiple_order_process.action_report_greetings_report')._render_qweb_pdf(res_ids=active_ids)
+        conn = cups.Connection()
+        f = open('Greetings.pdf', 'wb')
+        f.write(file)
+        f.close()
+        printers = conn.getPrinters()
+        for printer_name in printers:
+            if printer_name:
+                conn.printFile(printer_name, 'Greetings.pdf', '', {})
 
     # Every redispatch must have unique records in res.partners
     # send unique reference again to res.partners to use in stock.picking

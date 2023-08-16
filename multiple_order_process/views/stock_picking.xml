@@ -7,19 +7,27 @@
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
-                <field name="unique_ref" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}" context="{'custom_search': True}"/>
+                <field name="unique_ref" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"
+                       context="{'custom_search': True}"/>
                 <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="return_order" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
-                <field name="order_status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="order_status" widget="badge"
+                       attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
             </xpath>
             <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|', ('state', '!=', 'done'), ('picking_type_code', '=', 'outgoing')]}</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('state', '!=', 'done'), ('picking_type_code', '=',
+                    'outgoing')]}
+                </attribute>
             </xpath>
             <xpath expr="//form/header/button[@name='button_validate']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft', 'waiting')), ('picking_type_code', '=', 'outgoing')]}</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft',
+                    'waiting')), ('picking_type_code', '=', 'outgoing')]}
+                </attribute>
             </xpath>
             <xpath expr="//button[@name='action_cancel']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft', 'waiting')), ('picking_type_code', '=', 'outgoing')]}</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft',
+                    'waiting')), ('picking_type_code', '=', 'outgoing')]}
+                </attribute>
             </xpath>
         </field>
     </record>
@@ -36,9 +44,11 @@
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_date_time" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
-                <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}" context="{'invoice_with_status': True}"/>
+                <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"
+                       context="{'invoice_with_status': True}"/>
                 <field name="invoice_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
-                <field name="order_status" widget="badge" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="order_status" widget="badge"
+                       attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
             </xpath>
         </field>
     </record>
@@ -61,11 +71,14 @@
                 <filter name="state_wip" string="WIP - DO" domain="[('order_status', '=', 'wip')]"/>
                 <filter name="state_ready" string="Ready - DO" domain="[('order_status', '=', 'ready')]"/>
                 <filter name="state_handoff" string="Hand Off - DO" domain="[('order_status', '=', 'hand_off')]"/>
-                <filter name="state_not_serviceable" string="Not Serviceable - DO" domain="[('order_status', '=', 'not_serviceable')]"/>
-                <filter name="state_dispatched" string="Dispatched - DO" domain="[('order_status', '=', 'dispatched')]"/>
+                <filter name="state_not_serviceable" string="Not Serviceable - DO"
+                        domain="[('order_status', '=', 'not_serviceable')]"/>
+                <filter name="state_dispatched" string="Dispatched - DO"
+                        domain="[('order_status', '=', 'dispatched')]"/>
                 <filter name="state_delivered" string="Delivered - DO" domain="[('order_status', '=', 'delivered')]"/>
                 <filter name="state_returned" string="Returned - DO" domain="[('order_status', '=', 'returned')]"/>
-                <filter name="state_re_dispatched" string="Re-Dispatched - DO" domain="[('order_status', '=', 're_dispatched')]"/>
+                <filter name="state_re_dispatched" string="Re-Dispatched - DO"
+                        domain="[('order_status', '=', 're_dispatched')]"/>
                 <filter name="state_canceled" string="Cancelled - DO" domain="[('order_status', '=', 'cancelled')]"/>
             </xpath>
         </field>
@@ -88,5 +101,25 @@
         <field name="code">hand_off_ids</field>
         <field name="prefix">H</field>
         <field name="padding">6</field>
+    </record>
+
+    <record id="action_report_delivery_form_printer" model="ir.actions.server">
+        <field name="name">Delivery Form - Printer</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.delivery_form_printing()</field>
+    </record>
+
+    <record id="action_report_greetings_template_printer" model="ir.actions.server">
+        <field name="name">Greetings - Printer</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.greetings_template_printing()</field>
     </record>
 </odoo>

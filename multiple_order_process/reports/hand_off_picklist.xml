@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_picklist_file_pdf">
+        <t t-call="web.html_container">
+
+            <!--                <div style="page-break-before: always">-->
+            <div class="header">
+                <img t-if="docs.sel_hand_off.company_id.logo"
+                     t-att-src="'data:image/png;base64,%s' % to_text(docs.sel_hand_off.company_id.logo)" height="80px"
+                     width="80px"/>
+            </div>
+            <hr/>
+            <h1>CONSOLIDATED PICKLIST</h1>
+            <hr/>
+            <span>
+                <strong>Date-Time:</strong>
+            </span>
+            <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y %H:%M:%S')"/>
+            <br/>
+            <span>
+                <strong>Courier:</strong>
+            </span>
+            <t t-esc="docs.sel_hand_off.courier_company.courier_company.name"/>
+            <br/>
+            <hr/>
+            <b>Client:</b>
+            <t t-if="docs.sel_hand_off.unique_ref.try_no_type == '0'">
+                <t t-esc="docs.sel_hand_off.unique_ref.customer_name.parent_id.name"/>
+            </t>
+            <t t-else="docs.sel_hand_off.unique_ref.try_no_type != '0'">
+                <t t-esc="docs.sel_hand_off.unique_ref.parent_line.customer_name.parent_id.name"/>
+            </t>
+            <span style="float:right; align:right; padding-right:250px">
+                <b>Picked by:</b>
+            </span>
+            <br/>
+            <b>Hand-off ID:</b>
+            <t t-esc="docs.sel_hand_off.hand_off_id"/>
+            <br/>
+            <b>Hand-off date:</b>
+            <t t-esc="docs.date" t-options="{'widget': 'date', 'format': 'MM/dd/yyyy'}"/>
+            <br/>
+            <b>Total Quantity:</b>
+            <t t-set="quant" t-value="[]"/>
+            <t t-foreach="docs.env['stock.picking'].search([])" t-as="s">
+                <t t-if="docs.date and docs.sel_hand_off and s.hand_off_date_time and s.hand_off_id">
+                    <t t-if="docs.date == s.hand_off_date_time.date() and docs.sel_hand_off.hand_off_id == s.hand_off_id and s.picking_type_code == 'outgoing'">
+                        <t t-set="quant" t-value="quant + [s.move_ids_without_package.product_uom_qty]"/>
+                    </t>
+                </t>
+            </t>
+            <t t-esc="round(sum(quant))"/>
+            <br/>
+            <br/>
+            <hr/>
+            <t t-set="prod_list" t-value="[]"/>
+            <t t-set="prod_quant_dist" t-value="{}"/>
+            <table style="width:100%; border:1pt solid black; border-collapse:collapse">
+                <thead>
+                    <th style="width:8%; border:1pt solid black; font-size:17px">Sl No</th>
+                    <th style="width:17%; border:1pt solid black; font-size:17px">Product Code</th>
+                    <th style="width:65%; border:1pt solid black; font-size:17px">Product Name</th>
+                    <th style="width:65%; border:1pt solid black; font-size:17px">Box Code</th>
+                    <th style="width:10%; border:1pt solid black; font-size:17px">Quantity</th>
+                </thead>
+                <body>
+                    <t t-foreach="docs.env['stock.picking'].search([])" t-as="s">
+                        <t t-if="docs.date and docs.sel_hand_off and s.hand_off_date_time and s.hand_off_id">
+                            <t t-if="docs.date == s.hand_off_date_time.date() and docs.sel_hand_off.hand_off_id == s.hand_off_id and s.picking_type_code == 'outgoing'">
+                                <t t-if="s.unique_ref.global_item_code not in prod_list">
+                                    <t t-set="prod_list" t-value="prod_list + [s.unique_ref.global_item_code]"/>
+                                    <t t-esc="prod_quant_dist.update({s.unique_ref.global_item_code: s.unique_ref.qty})"/>
+                                </t>
+                                <t t-else="s.unique_ref.global_item_coded in prod_list">
+                                    <t t-esc="prod_quant_dist.update({s.unique_ref.global_item_code : prod_quant_dist[s.unique_ref.global_item_code] + s.unique_ref.qty})"/>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
+                    <t t-set="i" t-value="1"/>
+                    <t t-foreach="prod_quant_dist" t-as="prods">
+                        <tr>
+                            <td style="border:1pt solid black; font-size:18px; text-align:center;">
+                                <t t-esc="i"/>
+                                <t t-set="i" t-value="i+1"/>
+                            </td>
+                            <td style="border:1pt solid black; font-size:18px; text-align:center;">
+                                <t t-esc="prods.default_code"/>
+                            </td>
+                            <td style="border:1pt solid black; font-size:18px">
+                                <t t-esc="prods.name"/>
+                            </td>
+                            <td style="border:1pt solid black; font-size:18px">
+                                <t t-esc="prods.packing_material"/>
+                            </td>
+                            <td style="border:1pt solid black; font-size:18px; text-align:center;">
+                                <t t-esc="round(prod_quant_dist.get(prods))"/>
+                            </td>
+                        </tr>
+                    </t>
+                </body>
+            </table>
+            <hr/>
+            <div style="text-align:right; padding-right:50px">
+                <b>Total:</b>
+                <span>
+                    <t t-esc="round(sum(prod_quant_dist.values()))"/>
+                </span>
+            </div>
+            <hr/>
+            <hr/>
+            <br/>
+            <div style="text-align:center;">End of Report</div>
+        </t>
+    </template>
+
+    <record id="picklist_file_report" model="ir.actions.report">
+        <field name="name">Picklist</field>
+        <field name="model">picklist.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">multiple_order_process.report_picklist_file_pdf</field>
+        <field name="report_file">multiple_order_process.report_picklist_file_pdf</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="picklist_file_form_report" model="ir.ui.view">
+        <field name="name">Picklist File Form</field>
+        <field name="model">picklist.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date"/>
+                    </group>
+                    <group>
+                        <field name='sel_hand_off' string='Hand Off ID' context="{'hand_off_id': True}"
+                               options="{'no_create': True, 'no_create_edit':True}"/>
+                    </group>
+                    <!--                        domain="[('is_company','=', True),('courier_details','=', True)]"-->
+                </group>
+                <footer>
+                    <button string="Generate Picklist File" type="object" name="generate_picklist_file" class="btn btn-primary"/>
+                    <button name="picklist_printing" type="object" string="Print To printer" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" class="btn btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_picklist_file_Wizard">
+        <field name="name">Hand-off Picklist</field>
+        <field name="res_model">picklist.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="picklist_file_menu"
+              name="Hand Off Picklist"
+              parent="stock.menu_warehouse_report"
+              action="action_picklist_file_Wizard"
+              sequence="202"/>
+
+</odoo>

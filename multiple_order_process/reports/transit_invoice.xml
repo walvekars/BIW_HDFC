@@ -1,0 +1,231 @@
+<odoo>
+    <template id="report_transit_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o.picking_type_code == 'outgoing'">
+                    <div style="page-break-before: always">
+                        <table style="width:100%; border: 2pt solid black; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align:center;" colspan="6">
+                                    INVOICE
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left; border: 2pt solid black" colspan="6">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" height="45px"
+                                         width="40px" float="right" align="right"/>
+                                    <span style="font-size:12px;" t-field="o.company_id.name"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street2"/>,
+                                    <span style="font-size:12px;" t-field="o.company_id.city"/>-
+                                    <span style="font-size:12px;" t-field="o.company_id.zip"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td width="50%;" style="border: 2pt solid black" colspan="2">
+                                    <span t-esc="o.partner_id.name"/>,
+                                    <br/>
+                                    <span t-esc="o.partner_id.street"/>
+                                    <span t-esc="o.partner_id.street2"/>
+                                    <span t-esc="o.partner_id.city"/>
+                                    <span t-esc="o.partner_id.state_id.name"/>
+                                    <span t-esc="o.partner_id.zip"/>
+
+                                </td>
+                                <td colspan="4" style="border: 2pt solid black;">
+                                    <span>Date :
+                                        <span t-esc="o.scheduled_date.strftime('%m/%d/%Y')"/>
+                                    </span>
+                                    <br/>
+                                    <span>Invoice No.:
+                                        <span t-field="o.unique_ref"/>
+                                    </span>
+                                    <br/>
+                                    <span>Pan No.:</span>
+                                    <br/>
+                                    <span>GST No.:
+                                        <span t-field="o.company_id.vat"/>
+                                    </span>
+                                    <br/>
+                                    <span>Order No.:
+                                        <span t-field="o.unique_ref.ref_no"/>
+                                    </span>
+                                    <br/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border: 2pt solid black;" width="10%;">
+                                    <b>S.No.</b>
+                                </td>
+                                <td style="border: 2pt solid black;" width="40%;">
+                                    <b>ITEM DESCRIPTION</b>
+                                </td>
+                                <td style="border: 2pt solid black;" width="7.5%;">
+                                    <b>CODE</b>
+                                </td>
+                                <td style="border: 2pt solid black;" width="7.5%;">
+                                    <b>QTY</b>
+                                </td>
+                                <td style="border: 2pt solid black;" width="15%;">
+                                    <b>UNIT PRICE</b>
+                                </td>
+                                <td style="border: 2pt solid black;" width="20%;">
+                                    <b>SALE PRICE INR</b>
+                                </td>
+                            </tr>
+
+
+                            <t t-set="i" t-value="1"/>
+                            <!--                        <t t-foreach="o.move_ids_without_package" t-as="lines">-->
+                            <tr>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <span t-esc="i"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <t t-set="i" t-value="i+1"/>
+                                </td>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <span t-esc="o.unique_ref.global_item_code.name"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="o.unique_ref.ref_no"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <span t-esc="round(o.unique_ref.qty)"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <span t-esc="round(o.unique_ref.global_item_code.mrp_field)"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td style="border: 2pt solid black;">
+                                    <br/>
+                                    <br/>
+                                    <span t-esc="round(o.unique_ref.qty * o.unique_ref.global_item_code.mrp_field)"/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                            </tr>
+                            <!--                        </t>-->
+                            <tr>
+                                <td style="width:70%; border: 2pt solid black;"
+                                    colspan="5">
+                                    <span t-esc="o.amt_to_text(round(o.unique_ref.qty * o.unique_ref.global_item_code.mrp_field))"/>
+                                    Only
+                                </td>
+                                <td style="border: 2pt solid black">
+                                    <span t-esc="round(o.total())"/>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td width="50%;" colspan="2" style="border: 2pt solid black;">
+                                    <p>* This Invoice can be used for installation/Warranty claim/service requirements with
+                                        the
+                                        Brand.
+                                    </p>
+                                    <p>* Please contact your program help-desk in case of any issues.</p>
+                                    <p>* Price Inclusive of shipping charges</p>
+                                </td>
+                                <td style="border: 2pt solid black; border: 2pt solid black;" colspan="4">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center; border: 2pt solid black;" colspan="6">
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <span>***** This is a system generated invoice hence no signature is required. *****
+                                    </span>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%;" colspan="2">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" height="45px"
+                                         width="40px" float="right" align="left"/>
+                                </td>
+                                <td style="text-align:right;" colspan="4">
+                                    <b>Registered Office :</b>
+                                    <span style="font-size:12px;" t-field="o.company_id.name"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street"/>
+                                    <br/>
+                                    <span style="font-size:12px;" t-field="o.company_id.street2"/>,
+                                    <span style="font-size:12px;" t-field="o.company_id.city"/>-
+                                    <span style="font-size:12px;" t-field="o.company_id.zip"/>
+                                    <br/>
+                                    <span>CIN : U72100KA2011PTC075983<br/>Web site : www.biworldwide.co.in
+                                    </span>
+                                    <br/>
+                                    <span>
+                                        <b>India | Australia | Canada | China | LATAM | UK | US    </b>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_transit_invoice_form" model="ir.actions.report">
+        <field name="name">Transit Invoice</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">multiple_order_process.report_transit_invoice</field>
+        <field name="report_file">multiple_order_process.report_transit_invoice</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
