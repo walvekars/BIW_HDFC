@@ -54,7 +54,6 @@ class ConfigSheduledSFTP(models.Model):
                 'code': 'model.process_order(' + str(self.id) + ')'
             }
         )
-        print(new_create, self)
         self.ir_cron = new_create.id
         if self.done_creation != True:
             self.done_creation = True
@@ -62,7 +61,6 @@ class ConfigSheduledSFTP(models.Model):
     @api.onchange('time_to_execute')
     def _onchange_time_to_execute(self):
         self.ir_cron.nextcall = self.time_to_execute
-        print(self.ir_cron)
 
     @api.onchange('execute_every')
     def _onchange_execute_every(self):
@@ -73,7 +71,7 @@ class ConfigSheduledSFTP(models.Model):
         self.ir_cron.interval_type = self.interval_type
 
     def process_order(self, vals):
-        self.env['temp.rec'].automated_process(vals)
+        self.sudo().env['temp.rec'].automated_process(vals)
 
         # print("triggered.........", vals)
         # print(self.env['config.scheduled.sftp'].search([('id', '=', vals)]))

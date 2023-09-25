@@ -58,15 +58,15 @@
                 </header>
                 <group>
                     <group>
-                        <field name="try_no_type" widget="badge" readonly="0"/>
+                        <field name="try_no_type" widget="badge"/>
                         <field name="unique_ref" readonly="1"/>
-                        <field name="file_name" readonly="1"/>
-                        <field name="up_date" readonly="1"/>
+                        <field name="file_name"/>
+                        <field name="up_date"/>
 
                         <!--                <field name="customer"/>-->
 
-                        <field name="ref_no" readonly="1"/>
-                        <field name="customer_name" readonly="1"/>
+                        <field name="ref_no"/>
+                        <field name="customer_name"/>
                         <field name="add1"/>
                         <field name="add2"/>
                         <field name="add3"/>
@@ -76,35 +76,35 @@
                         <field name="ph_off"/>
                         <field name="mobile"/>
                         <field name="email_id"/>
-                        <field name="item_code" readonly="1"/>
-                        <field name="item_desc" readonly="1"/>
-                        <field name="global_item_code" readonly="1"/>
-                        <field name="qty" readonly="1"/>
+                        <field name="item_code"/>
+                        <field name="item_desc"/>
+                        <field name="global_item_code"/>
+                        <field name="qty"/>
                     </group>
                     <group>
-                        <field name="order_no" readonly="1"/>
-                        <field name="delivery_id" readonly="1"/>
-                        <field name="wip_date" readonly="1"/>
-                        <field name="hand_off_id" readonly="1"/>
-                        <field name="hand_off_date" readonly="1"/>
-                        <field name="awb_nos" readonly="1"/>
-                        <field name="dispatched_on" readonly="1"/>
-                        <field name="courier" readonly="1"/>
-                        <field name="pod_date" readonly="1"/>
-                        <field name="up_pod_date" readonly="1"/>
-                        <field name="person_delv" readonly="1"/>
-                        <field name="return_date" readonly="1"/>
-                        <field name="up_return_date" readonly="1"/>
-                        <field name="return_reason" readonly="1"/>
-                        <field name="cancel_date" readonly="1"/>
-                        <field name="cancel_reason" readonly="1"/>
-                        <field name="re_dispatch_update" readonly="1"/>
+                        <field name="order_no"/>
+                        <field name="delivery_id"/>
+                        <field name="wip_date"/>
+                        <field name="hand_off_id"/>
+                        <field name="hand_off_date"/>
+                        <field name="awb_nos"/>
+                        <field name="dispatched_on"/>
+                        <field name="courier"/>
+                        <field name="pod_date"/>
+                        <field name="up_pod_date"/>
+                        <field name="person_delv"/>
+                        <field name="return_date"/>
+                        <field name="up_return_date"/>
+                        <field name="return_reason"/>
+                        <field name="cancel_date"/>
+                        <field name="cancel_reason"/>
+                        <field name="re_dispatch_update"/>
                     </group>
                 </group>
-                <field name="try_lines" readonly="0">
+                <field name="try_lines" readonly="1">
                     <tree name="multi_tries" string="RE-DISPATCH LIES" editable="bottom">
                         <field name="try_no_type" widget="badge"/>
-<!--                        <field name="parent_line"/>-->
+                        <!--                        <field name="parent_line"/>-->
                         <field name="order_no"/>
                         <field name="delivery_id"/>
                         <field name="wip_date"/>

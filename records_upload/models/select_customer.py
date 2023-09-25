@@ -11,8 +11,7 @@ class SelectCustomerWizard(models.TransientModel):
     @api.depends('select_customer', 'no_of_orders')
     def compute_selected_customer(self):
         selected_ids = self.env.context.get('active_ids', [])
-        print(selected_ids)
-        selected_records = self.env['temp.rec'].browse(selected_ids)
+        selected_records = self.sudo().env['temp.rec'].browse(selected_ids)
         customer = []
         for ids in selected_records:
             customer.append(ids.customer.id)
@@ -23,8 +22,7 @@ class SelectCustomerWizard(models.TransientModel):
             raise ValidationError('Please Select Orders containing same "Customer"')
 
     def action_submit(self):
-        print("printed and submitted")
-        return self.env['temp.rec'].process_to_master(self)
+        return self.sudo().env['temp.rec'].process_to_master(self)
 
 
 # here wizard for selecting customer and proceding by clicking button which calls another function in multiple_order_process i.e submit button

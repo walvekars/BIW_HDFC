@@ -141,12 +141,10 @@ class StockPickingEnhanced(models.Model):
         for recs in self:
             if recs.courier_company:
                 cour_company_list.append(recs.courier_company.courier_company)
-        print(cour_company_list)
 
         map_hand_off_id = {}
         for cour in set(cour_company_list):
             map_hand_off_id[cour] = self.env['ir.sequence'].next_by_code('hand_off_ids')
-        print(map_hand_off_id)
 
         for lines in self:
             for ids in map_hand_off_id:

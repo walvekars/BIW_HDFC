@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access.temp.rec,access_temp_rec,multiple_order_process.model_temp_rec,,1,1,1,1
-access.pemt.rec,access_pemt_rec,multiple_order_process.model_pemt_rec,,1,1,1,1
+access.temp.rec,access_temp_rec,multiple_order_process.model_temp_rec,,1,0,0,1
+access.pemt.rec,access_pemt_rec,multiple_order_process.model_pemt_rec,base.group_system,1,1,0,1
 access.update.rec,access_update_rec,multiple_order_process.model_update_rec,,1,1,1,1
 access.logs.report,access_logs_report,multiple_order_process.model_logs_report,,1,1,1,1
 access.store.files,access_store_files,multiple_order_process.model_store_files,,1,0,0,0

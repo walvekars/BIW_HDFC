@@ -19,7 +19,6 @@ class ChooseFile(models.TransientModel):
     def action_submit_file(self):
         try:
             file = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
-            print(file)
             file.write(binascii.a2b_base64(self.file_data))
             file.seek(0)
             workbook = xlrd.open_workbook(file.name)
@@ -33,12 +32,12 @@ class ChooseFile(models.TransientModel):
 
         else:
 
-            pemt_rec = self.env['pemt.rec'].search([])
+            pemt_rec = self.sudo().env['pemt.rec'].search([])
             list_order_no = []
             for recs in pemt_rec:
                 list_order_no.append(recs.ref_no)
 
-            temp_rec = self.env['temp.rec'].search([])
+            temp_rec = self.sudo().env['temp.rec'].search([])
             list_order_no_trial_sheet = []
             for vals in temp_rec:
                 list_order_no_trial_sheet.append(vals.ref_no)
@@ -95,7 +94,6 @@ class ChooseFile(models.TransientModel):
             for row_no in range(sheet.nrows):
                 line = list(map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value), sheet.row(row_no)))
                 if row_no > 0:
-                    print(line[0])
                     # if line[0] == '':
                     #     print(line[0], 'false')
 
