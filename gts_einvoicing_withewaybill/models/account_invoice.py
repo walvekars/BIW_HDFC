@@ -358,6 +358,7 @@ class account_invoice(models.Model):
                     "GstRt": tax_rate,
                     "TotItemVal": round(
                         inv_line.price_subtotal + total_tax,2)}
+                # print("=-=-=>>>>>>>>>>>>>>>>>>>>>>",item_dict)
                 item_list.append(item_dict)
 
 

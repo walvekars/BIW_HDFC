@@ -8,7 +8,7 @@ class PermanentRecords(models.Model):
     _description = 'Master Sheet'
     _rec_name = 'unique_ref'
 
-    unique_ref = fields.Char(string='UNIQUE REF', default=lambda self: _('New'))
+    unique_ref = fields.Char(string='UNIQUE REF', readonly=True, default=lambda self: _('New'))
     file_name = fields.Many2one('store.files', string='FILE NAME', ondelete='restrict')
     up_date = fields.Datetime(string='FILE UPLOAD DATE - TIME')
     # customer = fields.Many2one('res.partner', string="CUSTOMER", ondelete='restrict')
@@ -66,13 +66,13 @@ class PermanentRecords(models.Model):
         if vals.get('unique_ref', _('New')) == _('New'):
             vals['unique_ref'] = self.env['ir.sequence'].next_by_code(
                 'temp.rec') or _('New')
-        res = super(PermanentRecords, self).sudo().create(vals)
+        res = super(PermanentRecords, self).create(vals)
         return res
 
     def name_get(self):
         result = []
         for record in self:
-            if self.sudo().env.context.get('custom_name', False):
+            if self.env.context.get('custom_name', False):
                 result.append((record.id, "{}".format(record.unique_ref)))
             else:
                 result.append((record.id, "{}".format(record.unique_ref + ', ' + record.ref_no)))
@@ -80,7 +80,7 @@ class PermanentRecords(models.Model):
 
     @api.constrains('order_status')
     def change_state(self):
-        for rec in self.sudo():
+        for rec in self:
             if rec.order_status == 'wip' and rec.first_wip == False:
                 rec.wip_date = datetime.date.today()
                 rec.first_wip = True

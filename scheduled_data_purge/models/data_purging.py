@@ -36,6 +36,7 @@ class ConfigDataPurging(models.Model):
 
     @api.constrains('name')
     def schedule_purging(self):
+        print(datetime.timedelta(days=1))
         new_create = self.env['ir.cron'].create(
             {
                 'name': self.name.name + ' - Data Purge',
@@ -51,6 +52,7 @@ class ConfigDataPurging(models.Model):
                 'code': 'model.data_purge(' + str(self.id) + ')'
             }
         )
+        print(new_create, self)
         self.ir_cron = new_create.id
         if self.done_creation != True:
             self.done_creation = True
@@ -58,6 +60,7 @@ class ConfigDataPurging(models.Model):
     @api.onchange('time_to_execute')
     def _onchange_time_to_execute(self):
         self.ir_cron.nextcall = self.time_to_execute
+        print(self.ir_cron)
 
     @api.onchange('execute_every')
     def _onchange_execute_every(self):
@@ -68,24 +71,33 @@ class ConfigDataPurging(models.Model):
         self.ir_cron.interval_number = self.interval_type
 
     def data_purge(self, val):
+        print("data purging.............")
         logger.info(f'Data Purging....')
         schedule_data_purging = self.search([('id', '=', val)])
         logger.info(f"{schedule_data_purging} Data Purging Record")
+        print(schedule_data_purging)
         days_before = schedule_data_purging.days_before
+        print(days_before)
         logger.info(f"Days Before: {days_before}")
         that_date = datetime.date.today() - datetime.timedelta(days=days_before)
+        print(that_date)
         logger.info(f"That date: {that_date}")
         company_id = schedule_data_purging.name
+        print(company_id)
         logger.info(f"Company ID: {company_id}")
+        print(that_date.strftime('%d-%m-%Y'))
         logger.info(f'Without conversion: {that_date}')
         logger.info(f"With conversion: {that_date.strftime('%Y-%m-%d')}")
-        logger.info(self.sudo().env['pemt.rec'].search([]).customer)
-        # logger.info(f"Update dates got in master 'DD:MM:YYYY': {self.sudo().env['pemt.rec'].search([('up_date', '=', that_date.strftime('%d-%m-%Y'))])}")
-        # logger.info(f"Update dates got in master 'MM:DD:YYYY': {self.sudo().env['pemt.rec'].search([('up_date', '=', that_date.strftime('%m-%d-%Y'))])}")
-        logger.info(f"Update dates got in master 'YYYY:MM:DD': {self.sudo().env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d'))])}")
-        logger.info(f"customer got in master: {self.sudo().env['pemt.rec'].search([('customer', '=', company_id.name)])}")
-        up_date_recs = self.sudo().env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d')), ('customer', '=', company_id.name)])
+        print(self.env['pemt.rec'].search([]).customer)
+        logger.info(self.env['pemt.rec'].search([]).customer)
+        # logger.info(f"Update dates got in master 'DD:MM:YYYY': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%d-%m-%Y'))])}")
+        # logger.info(f"Update dates got in master 'MM:DD:YYYY': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%m-%d-%Y'))])}")
+        logger.info(f"Update dates got in master 'YYYY:MM:DD': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d'))])}")
+        logger.info(f"customer got in master: {self.env['pemt.rec'].search([('customer', '=', company_id.name)])}")
+        up_date_recs = self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d')), ('customer', '=', company_id.name)])
+        print(up_date_recs)
         logger.info(f"Updating Records in master sheet: {up_date_recs}")
+        print(len(up_date_recs))
         logger.info(f"Total Updating records in master: {len(up_date_recs)}")
         up_date_recs.update(
             {
@@ -118,12 +130,14 @@ class ConfigDataPurging(models.Model):
             }
         )
 
+        print("cammmmmmmmmmmmmmmmmmm")
         logger.info(f"after master")
 
         up_date_list = []
         for recs in up_date_recs:
             up_date_list.append(recs.unique_ref)
 
+        print("jjjjjjjjjjjjj")
         logger.info(f"update list for Contacts: {up_date_list}")
 
         res_partner = self.env['res.partner'].search([('unique_ref', 'in', up_date_list)])

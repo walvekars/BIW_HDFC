@@ -66,20 +66,26 @@ class TemporaryRecords(models.Model):
         if vals.get('unique_ref', _('New')) == _('New'):
             vals['unique_ref'] = self.env['ir.sequence'].next_by_code(
                 'temp.rec') or _('New')
-        res = super(TemporaryRecords, self).sudo().create(vals)
+        res = super(TemporaryRecords, self).create(vals)
         return res
 
     def validate(self):
         return self.env.ref('multiple_order_process.validation_report').report_action(self)
 
     def process_to_master(self, wiz):
+        print("processed to master")
+        print(wiz)
+        print(wiz.select_customer, wiz.no_of_orders)
+
         # selected ids in list
         selected_ids = self.env.context.get('active_ids', [])
 
         # converting selected ids to record tuple
         selected_records = self.browse(selected_ids)
+        print(selected_records)
 
-        res_partners = self.env['res.partner']
+        res_partners = self.env['res.partner'].search([])
+        product_template = self.env['product.template'].search([])
 
         vals = []
         delete = []
@@ -92,7 +98,7 @@ class TemporaryRecords(models.Model):
                     'Please click on "VALIDATE" and download validated file once (for future reference) and Proceed')
 
             else:
-                order = self.sudo().env['pemt.rec'].create({
+                order = self.env['pemt.rec'].create({
                     # 'try_no': self.env['multi.try'].search([('type', '=', '0')]).id,
                     'unique_ref': ids.unique_ref,
                     'file_name': ids.file_name.id,
@@ -145,7 +151,7 @@ class TemporaryRecords(models.Model):
         for recs in all_pemt_ids:
             recs.order_no = new_sale_order.id
 
-        self.sudo().env['temp.rec'].search([('id', 'in', delete)]).unlink()
+        self.env['temp.rec'].search([('id', 'in', delete)]).unlink()
 
     def automated_process(self, vals):
         path = Path(self.env['config.scheduled.sftp'].search([('id', '=', vals)]).name.path)
@@ -159,10 +165,12 @@ class TemporaryRecords(models.Model):
 
             try:
                 file = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+                print(file)
                 file.write(binascii.a2b_base64(file_data))
                 file.seek(0)
                 workbook = xlrd.open_workbook(file.name)
                 sheet = workbook.sheet_by_index(0)
+                print(sheet)
             except:
                 raise UserError(_("Invalid file! (Allowed format - .xlsx)"))
 
@@ -170,11 +178,11 @@ class TemporaryRecords(models.Model):
             if exist_file:
                 raise ValidationError(_('file Already Uploaded'))
             else:
-                pemt_rec = self.sudo().env['pemt.rec'].search([])
+                pemt_rec = self.env['pemt.rec'].search([])
                 list_order_no = []
                 for recs in pemt_rec:
                     list_order_no.append(recs.ref_no)
-                temp_rec = self.sudo().env['temp.rec'].search([])
+                temp_rec = self.env['temp.rec'].search([])
                 list_order_no_trial_sheet = []
                 for vals in temp_rec:
                     list_order_no_trial_sheet.append(vals.ref_no)
@@ -231,9 +239,10 @@ class TemporaryRecords(models.Model):
                 for row_no in range(sheet.nrows):
                     line = list(map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value), sheet.row(row_no)))
                     if row_no > 0:
+                        print(line[0])
                         for prods in client_code_id:
                             if line[11].strip() == prods.client_code.strip():
-                                master_id = self.sudo().env['pemt.rec'].create({
+                                master_id = self.env['pemt.rec'].create({
                                     'ref_no': line[0].strip(),
                                     'file_name': new_file_stored.id,
                                     'up_date': new_file_stored.upload_time,
@@ -296,9 +305,9 @@ class StoreFiles(models.Model):
     client_id = fields.Many2one('res.partner', ondelete='restrict', string='Client')
     order_count = fields.Integer(string='No. Of Orders')
 
-    # @api.constrains('name')
-    # def process_new_order(self):
-    #     print("new order")
+    @api.constrains('name')
+    def process_new_order(self):
+        print("new order")
 
 class ProductTemplateEnhance(models.Model):
     _inherit = 'product.template'

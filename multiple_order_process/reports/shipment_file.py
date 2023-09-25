@@ -74,7 +74,7 @@ class ShipmentReport(models.AbstractModel):
         if lines.only_re_dispatched == True:
             requested_status = requested_status + ['only_re_dispatched']
 
-        pemt_rec = self.sudo().env['pemt.rec'].search([])
+        pemt_rec = self.env['pemt.rec'].search([])
         for rec in pemt_rec:
             if rec.customer_name.parent_id == lines.company and lines.from_date <= rec.up_date <= lines.to_date and rec.try_no_type == '0' and rec.order_status in requested_status and rec.try_no_type == '0':
                 if 'only_re_dispatched' not in requested_status:
@@ -158,6 +158,7 @@ class ShipmentReport(models.AbstractModel):
 
 
                             else:
+                                print(rec, child_rec, "plllololololo")
                                 if child_rec.order_status in requested_status:
                                     sheet.write(row + 1, col, child_rec.ref_no)
                                     sheet.write(row + 1, col + 1, child_rec.item_code)

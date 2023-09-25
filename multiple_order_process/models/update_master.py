@@ -37,8 +37,8 @@ class UpdateMasterWizard(models.TransientModel):
         # converting selected ids to record tuple
         selected_records = self.env['update.rec'].browse(selected_ids)
 
-        awb_no = [rlist.awb_nos.awb_number for rlist in self.sudo().env['pemt.rec'].search([]) if rlist.awb_nos]
-        order_no = [rlist.ref_no.strip() for rlist in self.sudo().env['pemt.rec'].search([]) if rlist.ref_no]
+        awb_no = [rlist.awb_nos.awb_number for rlist in self.env['pemt.rec'].search([]) if rlist.awb_nos]
+        order_no = [rlist.ref_no.strip() for rlist in self.env['pemt.rec'].search([]) if rlist.ref_no]
         company_ids = []
         # company_ids = [rlist.customer_name.parent_id for rlist in self.env['pemt.rec'].search([]) if rlist.customer_name.parent_id]
         vals = []
@@ -47,9 +47,9 @@ class UpdateMasterWizard(models.TransientModel):
 
         for lines in selected_records:
             if lines.awb_nos:
-                awb_no_searched = self.sudo().env['pemt.rec'].search([('awb_nos', '=', lines.awb_nos.strip())])
+                awb_no_searched = self.env['pemt.rec'].search([('awb_nos', '=', lines.awb_nos.strip())])
             if lines.cancel_order:
-                order_no_searched = self.sudo().env['pemt.rec'].search([('ref_no', '=', lines.cancel_order.strip())])
+                order_no_searched = self.env['pemt.rec'].search([('ref_no', '=', lines.cancel_order.strip())])
 
             if self.to_update == 'delivery':
                 if lines.awb_nos.strip():
