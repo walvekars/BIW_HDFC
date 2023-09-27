@@ -52,21 +52,21 @@
         <field name="name">master.sheet.form</field>
         <field name="model">pemt.rec</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="0" edit="1">
                 <header>
                     <field name="order_status" widget="statusbar" clickable="1"/>
                 </header>
                 <group>
                     <group>
-                        <field name="try_no_type" widget="badge" readonly="0"/>
+                        <field name="try_no_type" widget="badge"/>
                         <field name="unique_ref" readonly="1"/>
-                        <field name="file_name" readonly="1"/>
-                        <field name="up_date" readonly="1"/>
+                        <field name="file_name"/>
+                        <field name="up_date"/>
 
                         <!--                <field name="customer"/>-->
 
-                        <field name="ref_no" readonly="1"/>
-                        <field name="customer_name" readonly="1"/>
+                        <field name="ref_no"/>
+                        <field name="customer_name"/>
                         <field name="add1"/>
                         <field name="add2"/>
                         <field name="add3"/>
@@ -76,29 +76,29 @@
                         <field name="ph_off"/>
                         <field name="mobile"/>
                         <field name="email_id"/>
-                        <field name="item_code" readonly="1"/>
-                        <field name="item_desc" readonly="1"/>
-                        <field name="global_item_code" readonly="1"/>
-                        <field name="qty" readonly="1"/>
+                        <field name="item_code"/>
+                        <field name="item_desc"/>
+                        <field name="global_item_code"/>
+                        <field name="qty"/>
                     </group>
                     <group>
-                        <field name="order_no" readonly="1"/>
-                        <field name="delivery_id" readonly="1"/>
-                        <field name="wip_date" readonly="1"/>
-                        <field name="hand_off_id" readonly="1"/>
-                        <field name="hand_off_date" readonly="1"/>
-                        <field name="awb_nos" readonly="1"/>
-                        <field name="dispatched_on" readonly="1"/>
-                        <field name="courier" readonly="1"/>
-                        <field name="pod_date" readonly="1"/>
-                        <field name="up_pod_date" readonly="1"/>
-                        <field name="person_delv" readonly="1"/>
-                        <field name="return_date" readonly="1"/>
-                        <field name="up_return_date" readonly="1"/>
-                        <field name="return_reason" readonly="1"/>
-                        <field name="cancel_date" readonly="1"/>
-                        <field name="cancel_reason" readonly="1"/>
-                        <field name="re_dispatch_update" readonly="1"/>
+                        <field name="order_no"/>
+                        <field name="delivery_id"/>
+                        <field name="wip_date"/>
+                        <field name="hand_off_id"/>
+                        <field name="hand_off_date"/>
+                        <field name="awb_nos"/>
+                        <field name="dispatched_on"/>
+                        <field name="courier"/>
+                        <field name="pod_date"/>
+                        <field name="up_pod_date"/>
+                        <field name="person_delv"/>
+                        <field name="return_date"/>
+                        <field name="up_return_date"/>
+                        <field name="return_reason"/>
+                        <field name="cancel_date"/>
+                        <field name="cancel_reason"/>
+                        <field name="re_dispatch_update"/>
                     </group>
                 </group>
                 <field name="try_lines" readonly="0">
@@ -125,6 +125,10 @@
                         <field name="order_status" widget="badge"/>
                     </tree>
                 </field>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -149,6 +153,20 @@
         <field name="name">Fresh Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">pemt.rec</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('try_no_type', '=', 0)]</field>
+        <field name="context">{'custom_name': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_no_content_smiling_face">Processed Orders Reflects Here!</p>
+        </field>
+    </record>
+
+
+
+     <record id="action_master_sheet_ediatable" model="ir.actions.act_window">
+        <field name="name">Fresh Orders - Admin</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pemt.rec</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('try_no_type', '=', 0)]</field>
         <field name="context">{'custom_name': True}</field>
@@ -161,6 +179,13 @@
               name="Fresh Orders"
               parent="multiple_order_process.order_sheet"
               action="action_master_sheet"
+              sequence="2"/>
+
+    <menuitem id="fresh_orders_editable"
+              name="Fresh Orders - Admin"
+              parent="multiple_order_process.order_sheet"
+              action="action_master_sheet_ediatable"
+                groups="base.group_system"
               sequence="2"/>
 
 </odoo>

@@ -73,16 +73,11 @@ class TemporaryRecords(models.Model):
         return self.env.ref('multiple_order_process.validation_report').report_action(self)
 
     def process_to_master(self, wiz):
-        print("processed to master")
-        print(wiz)
-        print(wiz.select_customer, wiz.no_of_orders)
-
         # selected ids in list
         selected_ids = self.env.context.get('active_ids', [])
 
         # converting selected ids to record tuple
         selected_records = self.browse(selected_ids)
-        print(selected_records)
 
         res_partners = self.env['res.partner'].search([])
         product_template = self.env['product.template'].search([])
