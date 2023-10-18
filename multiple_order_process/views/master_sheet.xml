@@ -4,7 +4,7 @@
         <field name="name">master.sheet.tree</field>
         <field name="model">pemt.rec</field>
         <field name="arch" type="xml">
-            <tree create="0">
+            <tree create="0" delete="0">
                 <field name="unique_ref"/>
                 <field name="file_name"/>
                 <field name="up_date"/>
@@ -52,7 +52,7 @@
         <field name="name">master.sheet.form</field>
         <field name="model">pemt.rec</field>
         <field name="arch" type="xml">
-            <form create="0" edit="1">
+            <form create="0" edit="1" delete="0">
                 <header>
                     <field name="order_status" widget="statusbar" clickable="1"/>
                 </header>

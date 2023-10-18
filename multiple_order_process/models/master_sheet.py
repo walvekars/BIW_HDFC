@@ -32,6 +32,7 @@ class PermanentRecords(models.Model):
     delivery_id = fields.Many2one('stock.picking', string='DELIVERY ID', ondelete='restrict', tracking=True)
     wip_date = fields.Date(string='WIP DATE', help='This date updates based on First WIP Boolean field, if it is false date updates here and sets tpo True', tracking=True)
     first_wip = fields.Boolean(string='First WIP', default=False, help="Called First wip because, There are many wip states Those are ODOO - Waiting and Confirmed, and BIW - Ready and Not Serviceable", tracking=True)
+    shipment_file_done_wip = fields.Boolean(default=False, help="This is for report purpose - Shipment File, WIP orders will be printed only once, the same orders will print once the status gets changed")
     hand_off_id = fields.Char(string='HAND-OFF ID', related='delivery_id.hand_off_id', store=True)
     hand_off_date = fields.Date(string='HAND-OFF Date', tracking=True)
     awb_nos = fields.Many2one('air.way.bill', string='AWB NO', related='delivery_id.awb_number', store=True)

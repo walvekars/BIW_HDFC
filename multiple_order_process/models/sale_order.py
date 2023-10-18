@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, fields, _
-
+from num2words import num2words
 class sale_order_line(models.Model):
     _inherit = 'sale.order.line'
 
@@ -33,3 +33,11 @@ class stock_move(models.Model):
             if picking:
                 picking = picking[0]
         return picking
+
+class PurchaseOrderNew(models.Model):
+    _inherit = "purchase.order"
+
+    def amount_to_text(self, total):
+        amt_txt = num2words(total)
+        amt_upp = amt_txt.upper()
+        return amt_upp

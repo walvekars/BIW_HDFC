@@ -27,6 +27,7 @@
         'reports/transit_invoice.xml',
         'reports/courier_hand_off.xml',
         'reports/hand_off_picklist.xml',
+        'reports/purchase_report.xml',
         # 'views/account_move.xml',
     ],
     'installable': True,
