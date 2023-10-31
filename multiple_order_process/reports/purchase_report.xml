@@ -1,6 +1,6 @@
 <odoo>
     <template id="report_purchase_order_form_rep">
-        <t t-call="web.html_container">
+       <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <!--                <div style= "page-break-before: always;">-->
                 <div class="header">
@@ -8,8 +8,8 @@
                         <div width="30%">
 
                             <img t-if="o.company_id.logo"
-                                 t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" height="100pt"
-                                 width="100pt" float="left" align="left"/>
+                                 t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" height="130pt"
+                                 width="130pt" float="left" align="left"/>
                         </div>
                     </tr>
                 </div>
@@ -124,12 +124,12 @@
                             <td style="border: 1pt solid black;">
                                 <t t-set="tax"
                                    t-value="(int(''.join(i for i in lines.taxes_id.name if i.isdigit()))/100 * lines.price_unit) *  lines.product_qty"/>
-                                <t t-esc="tax"/>
+                                <t t-esc="round(tax,2)"/>
                                 <t t-set="tot_tax" t-value="tot_tax + tax"/>
 
                             </td>
                             <td style="border: 1pt solid black;">
-                                <t t-esc="tax + lines.price_subtotal"/>
+                                <t t-esc="round(tax + lines.price_subtotal,2)"/>
                                 <t t-set="tot_amt" t-value="tot_amt + tax + lines.price_subtotal"/>
                             </td>
                         </tr>
@@ -155,7 +155,7 @@
                             <span></span>
                         </td>
                         <td style="border: 1pt solid black;">
-                            <t t-esc="tot_gross"/>
+                            <t t-esc="round(tot_gross,2)"/>
                         </td>
                         <td>
                             <span></span>
@@ -266,7 +266,7 @@
                         </p>
                     </td>
                 </table>
-                <table style="width:100%; border: 1pt solid black; border-collapse: collapse; border-top :0px;">
+                <table style="width:100%; border: 1pt solid black; border-collapse: collapse; border-top :0px; page-break-after:always">
                     <tr>
                         <td>
                             <strong>Delivery Address:</strong>
@@ -289,6 +289,7 @@
                             <br/>
                         </td>
                     </tr>
+
                 </table>
                 <!--                <div style="page-break-before: always;">-->
                 <!--                </div>-->
