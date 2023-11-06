@@ -47,6 +47,8 @@
                 <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"
                        context="{'invoice_with_status': True}"/>
                 <field name="invoice_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="credit_note_number"/>
+                <field name="credit_note_date"/>
                 <field name="order_status" widget="badge"
                        attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
             </xpath>

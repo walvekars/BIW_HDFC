@@ -8,7 +8,7 @@
     'description': """Records importing from excel sheet sent by client for creating sale order""",
     'category': 'Services/services',
     'website': '',
-    'depends': ['base', 'sale', 'account_invoice_pricelist', 'gts_einvoicing_withewaybill', 'report_xlsx', 'stock', 'sale_management', 'sale_stock'],
+    'depends': ['base', 'sale', 'account_invoice_pricelist', 'gts_einvoicing_withewaybill', 'report_xlsx', 'stock', 'sale_management', 'sale_stock','purchase','account'],
     'data': [
         'security/ir.model.access.csv',
         'views/configuration.xml',
@@ -28,6 +28,7 @@
         'reports/courier_hand_off.xml',
         'reports/hand_off_picklist.xml',
         'reports/purchase_report.xml',
+        'reports/participant.xml',
         # 'views/account_move.xml',
     ],
     'installable': True,

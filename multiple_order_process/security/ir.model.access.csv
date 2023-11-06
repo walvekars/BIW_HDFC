@@ -13,3 +13,5 @@ access.update.master.wizard,access_update_master_wizard,multiple_order_process.m
 access.shipment.file.wizard,access_shipment_file_wizard,multiple_order_process.model_shipment_file_wizard,,1,1,1,1
 access.handoff.wizard,access_handoff_wizard,multiple_order_process.model_handoff_wizard,,1,1,1,1
 access.picklist.wizard,access_picklist_wizard,multiple_order_process.model_picklist_wizard,,1,1,1,1
+access.courier.company.code,access_courier_company_code,multiple_order_process.model_courier_company_code,,1,1,1,1
+access.compress.product.quantity,access_compress_product_quantity,multiple_order_process.model_compress_product_quantity,,1,1,1,1

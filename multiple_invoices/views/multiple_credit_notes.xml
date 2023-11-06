@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="multiple_credit_note_from_delivery" model="ir.ui.view">
+        <field name="name">multiple.credit.note.delivery</field>
+        <field name="model">multiple.credit.note</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="journal_id"/>
+                    </group>
+                    <group>
+                        <field name="invoice_date"/>
+                    </group>
+
+                </group>
+                <footer>
+                    <button name="multiple_credit_note" string="Multiple Credit Note" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" class="btn btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_multiple_credit_note" model="ir.actions.act_window">
+        <field name="name">Multiple Credit Note</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">multiple.credit.note</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_create_multiple_credit_note" model="ir.actions.server">
+        <field name="name">Multiple Credit Note</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">
+            if record:
+            action_values = env.ref('multiple_invoices.action_multiple_credit_note').sudo().read()[0]
+            action_values.update({'context': env.context})
+            action = action_values
+        </field>
+    </record>
+
+</odoo>

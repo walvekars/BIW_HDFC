@@ -1,0 +1,359 @@
+<odoo>
+    <template id="participant_invoice_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="header">
+                    <table>
+                        <tr>
+                            <div width="30%">
+                                <img src='/records_upload/static/src/logo.png' align="left" height="130pt"
+                                     width="130pt"/>
+                            </div>
+                            <div width="50%">
+                                <h3 style="text-align:center; padding-right:20%">
+                                    <br/>
+                                    <strong>TAX INVOICE</strong>
+                                </h3>
+                            </div>
+                            <div width="30%" align="right">
+                                <strong>Invoice No:
+                                    <t t-esc="o.name"/>
+                                    <br/>
+                                    Invoice Date:
+                                    <t t-esc="o.invoice_date" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
+                                </strong>
+
+                            </div>
+                        </tr>
+                    </table>
+                </div>
+                <div class="footer">
+                    <div class="text-center" style="border-top: 1px solid black;">
+                        <span>Bank Details:Bank:HSBC BANK LTD|Branch:M.G.Road Branch,Bangalore|A/c
+                            No:073560500001|IFSC:HSBC0560002
+                        </span>
+                        <ul class="list-inline">
+                            Page:
+                            <span class="page"/>/
+                            <span class="topage"/>
+                        </ul>
+                    </div>
+                </div>
+
+                <t t-if="not o and doc">
+                    <t t-set="o" t-value="doc"/>
+                </t>
+
+                <t t-if="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-if="not o or not 'company_id' in o">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+
+                <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name"
+                     t-att-data-oe-id="o and o.id">
+                    <div class="page">
+                        <table class="table table-bordered table-1" width="100%"
+                               style="border:2px solid black; margin-bottom:2px; margin-top:2px;font-size:12px;">
+                            <tr>
+                                <td width="50%">
+                                    <div class="pull-left company_address" style="margin-left:10px;">
+                                        <strong style="font-weight: 900;font-size: 13px;">Supplier:</strong>
+                                        <br/>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">
+                                                <t t-esc="company.name"/>
+                                            </strong>
+                                        </div>
+                                        <span t-field="company.partner_id"
+                                              t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: true}"/>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">CIN No:</strong>
+
+                                            <t t-if="company.partner_id.cin_no">
+                                                <t t-esc="company.partner_id.cin_no"/>
+                                            </t>
+                                            <span style="margin-left:10px;">
+                                                <strong style="font-weight: 900;font-size: 13px;">PAN No:</strong>
+                                                <t t-if="company.partner_id.pan_no">
+                                                    <t t-esc="company.partner_id.pan_no"/>
+                                                </t>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">GST No:</strong>
+                                            <t t-esc="company.vat"/>
+                                            <span style="margin-left:20px;">
+                                                <strong style="font-weight: 900;font-size: 13px;">State State Code:
+                                                </strong>
+                                                <t t-esc="str(company.vat)[0:2]"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="25%">
+                                    <div style="margin-left:10px;">
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Customer Code:
+                                            </strong>
+                                            <t t-esc="o.ref"/>
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Reference/Po No:
+                                            </strong>
+                                            <t t-esc="o.reference_po_no"/>
+
+
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Payment Terms:</strong>
+                                            <t t-esc="o.invoice_payment_term_id.name"/>
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Due Date:</strong>
+                                            <t t-esc="o.invoice_date_due" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Program:</strong>
+                                            <t t-esc="o.program"/>
+
+                                        </div>
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">PO No:</strong>
+                                            <t t-esc="o.po_no"/>
+
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: 900;font-size: 13px;">Attn:</span>
+                                            <t t-esc="o.attn"/>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="25%">
+                                    <img t-if="o.qr_image"
+                                         t-att-src="'data:image/png;base64,%s' % to_text(o.qr_image)" height="160pt"
+                                         width="170pt"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered" width="100%"
+                               style="border:2px solid black; margin-bottom:2px; margin-top:2px;font-size:12px;">
+                            <tr>
+                                <td width="50%">
+                                    <div class="pull-left company_address" style="margin-left:10px;">
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Sold To:
+                                                <t t-esc="o.partner_id.name"/>,
+                                            </strong>
+                                            <br/>
+                                            <t t-esc="o.partner_id.street"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.street2"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.city"/>,<t t-esc="o.partner_id.zip"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.state_id.name"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.country_id.name"/>
+                                        </div>
+
+                                        <div>
+                                            <span>
+                                                <strong style="font-weight: 900;font-size: 13px;">PAN No:</strong>
+                                                <t t-esc="o.partner_id.pan_no"/>
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="50%">
+                                    <div style="margin-left:10px;">
+                                        <div>
+                                            <strong style="font-weight: 900;font-size: 13px;">Ship To:
+                                                <t t-esc="o.partner_id.name"/>,
+                                            </strong>
+                                            <br/>
+                                            <t t-esc="o.partner_id.street"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.street2"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.city"/>,<t t-esc="o.partner_id.zip"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.state_id.name"/>,
+                                            <br/>
+                                            <t t-esc="o.partner_id.country_id.name"/>
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                <strong style="font-weight: 900;font-size: 13px;">PAN No:</strong>
+                                                <t t-esc="o.partner_id.pan_no"/>
+
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" width="100%"
+                               style="border:2px solid black; margin-bottom:2px; margin-top:2px;font-size:12px;min-height:300px;">
+                            <tr>
+                                <th class="text-center"
+                                    style="width:5%;vertical-align:middle;font-weight: 900;font-size: 13px;">Sl. No
+                                </th>
+                                <th class="text-center"
+                                    style="width:39%;vertical-align:middle;font-weight: 900;font-size: 13px;">Item
+                                    Description/
+                                    <br/>
+
+                                </th>
+                                <th class="text-center"
+                                    style="width:7%;vertical-align:middle;font-weight: 900;font-size: 13px;">HSN Code
+                                </th>
+                                <th class="text-center"
+                                    style="width:4%;vertical-align:middle;font-weight: 900;font-size: 13px;">Quantity
+                                </th>
+                                <th class="text-center"
+                                    style="width:7%;vertical-align:middle;font-weight: 900;font-size: 13px;">Unit
+
+                                </th>
+                                <th class="text-center"
+                                    style="width:7%;vertical-align:middle;font-weight: 900;font-size: 13px;">Unit
+                                    Price(Rs)
+                                </th>
+                                <th class="text-center"
+                                    style="width:10%;vertical-align:middle;font-weight: 900;font-size: 13px;">Taxes
+                                </th>
+                                <th class="text-center"
+                                    style="width:20%;vertical-align:middle;font-weight: 900;font-size: 13px;">Taxable
+                                    Amount(Rs)
+                                </th>
+                            </tr>
+                            <t t-set="i" t-value="1"/>
+                            <t t-foreach="o.invoice_line_ids" t-as="line">
+
+                                <tr>
+                                    <td>
+                                        <span t-esc="i"/>
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_id.l10n_in_hsn_code"/>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <t t-esc="line.quantity"/>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <t t-esc="line.product_id.uom_po_id.name"/>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <t t-esc="'{0:,.2f}'.format(line.price_unit)"/>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <t t-esc="line.tax_ids.name"/>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <t t-esc="'{0:,.2f}'.format(line.price_subtotal)"/>
+                                    </td>
+
+                                </tr>
+                            </t>
+                        </table>
+                        <table style="width:100%; border: 1pt solid black; border-collapse: collapse;">
+                            <th style="width:20%; border: 1pt solid black; text-align: center; font-size: 11px;">Untaxed
+                                Amount
+                            </th>
+                            <th style="width:20%; border: 1pt solid black; text-align: center; font-size: 11px;">SGST
+                            </th>
+                            <th style="width:20%; border: 1pt solid black; text-align: center; font-size: 11px;">CGST
+                            </th>
+                            <th style="width:20%; border: 1pt solid black; text-align: center; font-size: 11px;">IGST
+                            </th>
+                            <th style="width:20%; border: 1pt solid black; text-align: center; font-size: 11px;">Total
+                            </th>
+
+
+                            <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>
+                            <tr>
+                                <td style="text-align: center; border: 1pt solid black;font-size: 11px;">
+                                    <span t-esc="'{0:,.2f}'.format(round(tax_totals['amount_untaxed'],2))"/>
+                                </td>
+                                <td style="text-align: center; border: 1pt solid black, font-size: 11px;">
+                                    <t t-foreach="tax_totals['groups_by_subtotal']['Untaxed Amount']" t-as="taxes">
+                                        <t t-if="taxes['tax_group_name'] == 'SGST'">
+                                            <span class="text-right"
+                                                  t-esc="'{0:,.2f}'.format(round(taxes['tax_group_amount'],2))"/>
+                                        </t>
+                                    </t>
+
+
+                                </td>
+                                <td style="text-align: center; border: 1pt solid black;font-size: 11px;">
+                                    <t t-foreach="tax_totals['groups_by_subtotal']['Untaxed Amount']" t-as="taxes">
+                                        <t t-if="taxes['tax_group_name'] == 'CGST'">
+                                            <span t-esc="'{0:,.2f}'.format(round(taxes['tax_group_amount'],2))"/>
+                                        </t>
+                                    </t>
+                                </td>
+                                <td style="text-align: center; border: 1pt solid black;font-size: 11px;">
+                                    <t t-foreach="tax_totals['groups_by_subtotal']['Untaxed Amount']" t-as="taxes">
+
+                                        <t t-if="taxes['tax_group_name'] == 'IGST'">
+                                            <span t-esc="'{0:,.2f}'.format(round(taxes['tax_group_amount'],2))"/>
+                                        </t>
+                                    </t>
+                                </td>
+                                <td style="text-align: center; border: 1pt solid black;font-size: 11px;">
+                                    <span t-esc="'{0:,.2f}'.format(round(tax_totals['amount_total'],2))"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" width="100%"
+                               style="border:2px solid black; margin-bottom:2px; margin-top:2px;font-size:12px;">
+                            <tr>
+                                <td width="50%">
+                                    <span>1. All invoices to be paid on or before the due date.
+                                        <br/>
+                                        2. Please quote the above invoice number for any invoice/payment related
+                                        queries
+                                        <br/>
+                                        3. NEFT/RTGS to be in the name of BI Worldwide India Private limited
+                                    </span>
+                                </td>
+                                <td width="50%" class="text-center" height="130">
+                                    <div>
+                                        <strong style="font-weight: 900;font-size: 13px;">For
+                                            <t t-esc="company.name"/>
+                                        </strong>
+                                    </div>
+                                    <div style="margin-top:72px;">Authorised Signatory</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_Participant_e_invoice_report" model="ir.actions.report">
+        <field name="name">Participant Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">multiple_order_process.participant_invoice_report</field>
+        <field name="report_file">multiple_order_process.participant_invoice_report</field>
+        <field name="binding_model_id" ref="sale.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+
+</odoo>

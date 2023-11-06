@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+multiple_invoices.access_generate_multiple_invoice,access_generate_multiple_invoice,multiple_invoices.model_generate_multiple_invoice,base.group_user,1,1,1,1
+access.multiple.credit.note,access_multiple_credit_note,multiple_invoices.model_multiple_credit_note,,1,1,1,1

@@ -266,7 +266,7 @@
                         </p>
                     </td>
                 </table>
-                <table style="width:100%; border: 1pt solid black; border-collapse: collapse; border-top :0px; page-break-after:always">
+                <table style="width:100%; border: 1pt solid black; border-collapse: collapse; border-top :0px;">
                     <tr>
                         <td>
                             <strong>Delivery Address:</strong>
@@ -308,4 +308,14 @@
         <field name="binding_type">report</field>
     </record>
 
+
+        <record id="invoice_excel_file_report_supporting" model="ir.actions.report">
+        <field name="name">Invoice Supporting Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">multiple_order_process.report_invoice_supporting</field>
+        <field name="report_file">multiple_order_process.report_invoice_supporting</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+    </record>
 </odoo>

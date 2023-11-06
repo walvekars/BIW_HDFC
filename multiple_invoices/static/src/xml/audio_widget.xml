@@ -1,0 +1,9 @@
+<templates>
+    <t t-name="your_module_name.audio_widget">
+        <div>
+            <audio controls></audio>
+            <button class="o_audio_play">Play</button>
+            <button class="o_audio_stop">Stop</button>
+        </div>
+    </t>
+</templates>

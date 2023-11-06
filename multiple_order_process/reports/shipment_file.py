@@ -1,5 +1,6 @@
 from time import strftime, strptime
 from odoo import models, fields, api
+from datetime import datetime
 
 class ShipmentFileWizard(models.TransientModel):
     _name = 'shipment.file.wizard'

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="multiple_invoice_form" model="ir.ui.view">
+        <field name="name">generate.multiple.invoice.form</field>
+        <field name="model">generate.multiple.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="journal_id"/>
+                    </group>
+                    <group>
+                        <field name="invoice_date"/>
+                        <field name="payment_terms"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="creating_multiple_invoices" string="Create Multiple Invoice" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_multiple_invoice" model="ir.actions.act_window">
+        <field name="name">Create Multiple Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">generate.multiple.invoice</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_create_multiple_invoices" model="ir.actions.server">
+        <field name="name">Create Multiple Invoice</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">
+            if record:
+            action_values = env.ref('multiple_invoices.action_generate_multiple_invoice').sudo().read()[0]
+            action_values.update({'context': env.context})
+            action = action_values
+        </field>
+    </record>
+
+</odoo>
