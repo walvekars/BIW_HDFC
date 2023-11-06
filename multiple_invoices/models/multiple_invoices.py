@@ -29,97 +29,6 @@ class CustomerDeliveryAddress(models.Model):
     def _get_contact_name(self, partner, name):
         return name
 
-
-#     def name_get(self):
-#         res = []
-#         for partner in self:
-#             res.append((partner.id,
-#                         f"{partner.name}" + '\n'f"{partner.street}" + '\n'f"{partner.street2}" + '\n'f"{partner.city}" + ' ' + f"{partner.zip}" + '\n'+' ‒ ' + f"{partner.vat}"))
-#         return res
-
-#
-# class GenerateMultipleInvoice(models.TransientModel):
-#     _name = 'generate.multiple.invoice'
-#
-#     partner_id = fields.Many2one('res.partner', string='Partner', compute='compute_wizard_fields')
-#     journal_id = fields.Many2one('account.journal', string='Journal', compute='compute_wizard_fields')
-#     invoice_date = fields.Date(string='Invoice Date', default=datetime.date.today())
-#     payment_terms = fields.Many2one('account.payment.term', string='Payment Term')
-
-    # @api.depends('journal_id')
-    # def compute_wizard_fields(self):
-    #     selected_ids = self.env.context.get('active_ids', [])
-    #     selected_records = self.env['stock.picking'].browse(selected_ids)
-    #     for ids in selected_records:
-    #         if ids.invoiced_id:
-    #             raise ValidationError('Some Order(s) is/are already set for Invoicing')
-    #     partner_id_list = []
-    #     for picking in selected_records:
-    #         if picking.partner_id.parent_id:
-    #             partner_id_list.append(picking.partner_id.parent_id.id)
-    #     if len(set(partner_id_list)) == 1:
-    #         self.partner_id = list(set(partner_id_list))[0]
-    #     else:
-    #         raise ValidationError('Please Select "Delivery-Orders" containing "Delivery Address"')
-    #     print('journal                             iddddddddddddddddddddddddddddddddddd',self.journal_id )
-    #     self.journal_id = self.env['account.journal'].search([('name', '=', 'Tax Invoices')]).id
-    #
-    # def creating_multiple_invoices(self):
-    #     selected_ids = self.env.context.get('active_ids', [])
-    #     selected_records = self.env['stock.picking'].browse(selected_ids)
-    #     print('triggering  ppart1111111111111111111111...........')
-    #     for recs in selected_records:
-    #         print('recs ststusssssssssssssssssssssssss',recs.status)
-    #         uncompressed = [(0, 0, {
-    #             'customer_ref': recs.unique_ref,
-    #             'delivery_ref': recs.name,
-    #             'product_code': recs.move_ids_without_package.product_id.id,
-    #             'at_status': recs.status,
-    #             'compress_product_quantity': recs.move_ids_without_package.product_uom_qty,
-    #             'product_unit_price': recs.move_ids_without_package.product_id.list_price,
-    #             'tax': recs.move_ids_without_package.product_id.taxes_id.name,
-    #             'total': recs.move_ids_without_package.product_uom_qty * recs.move_ids_without_package.product_id.list_price
-    #         })]
-    #         print('trigerring part22222222222222222222222222222222222222.................')
-    #
-    #         compressed = [(0, 0, {
-    #             'product_code': recs.move_ids_without_package.product_id.id,
-    #             'compress_product_quantity': recs.move_ids_without_package.product_uom_qty,
-    #             'product_unit_price': recs.move_ids_without_package.product_id.list_price,
-    #             'tax': recs.move_ids_without_package.product_id.taxes_id.name,
-    #             'total': recs.move_ids_without_package.product_uom_qty * recs.move_ids_without_package.product_id.list_price
-    #         })]
-    #         print('trigerring part333333333333333333333333333333333333333.................')
-    #
-    #         invoice_lines = [(0, 0, {
-    #             'product_id': recs.move_ids_without_package.product_id.id,
-    #             'quantity': recs.move_ids_without_package.product_uom_qty,
-    #             'product_uom_id': recs.move_ids_without_package.product_uom,
-    #             'tax_ids': recs.move_ids_without_package.product_id.taxes_id.ids,
-    #             # 'price_unit': recs.move_ids_without_package.product_id.list_price,
-    #             # 'price_subtotal': recs.move_ids_without_package.product_uom_qty * recs.move_ids_without_package.product_id.list_price,
-    #         })]
-    #         print('trigerring 444444444444444444444444444444.................')
-    #
-    #         account_move = self.env['account.move'].create({
-    #             'move_type': 'out_invoice',
-    #             'pricelist_id': recs.partner_id.property_product_pricelist,
-    #             'state': 'draft',
-    #             'partner_id': recs.partner_id.id,
-    #             'invoice_payment_term_id': self.payment_terms,
-    #             'invoice_date': self.invoice_date,
-    #             'l10n_in_gst_treatment': 'consumer',
-    #             'journal_id': self.journal_id.id,
-    #             'compressed_invoice_change': uncompressed,
-    #             'compressed_invoice': compressed,
-    #             'invoice_line_ids': invoice_lines
-    #         })
-    #
-    #         print('trigerring 555555555555555555555555555.................')
-    #
-    #
-    #         recs.invoiced_id = account_move.
-
 class GenerateMultipleInvoice(models.TransientModel):
     _name = 'generate.multiple.invoice'
 
@@ -134,6 +43,8 @@ class GenerateMultipleInvoice(models.TransientModel):
         selected_records = self.env['stock.picking'].browse(selected_ids)
 
         for ids in selected_records:
+            if not ids.unique_ref.dispatched_on:
+                raise ValidationError('Please select Orders which are dispatched')
             if ids.invoiced_id:
                 raise ValidationError('Please select Order(s) which is/are yet to be Invoiced')
             if not ids.zip:

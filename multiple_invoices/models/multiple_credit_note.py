@@ -17,11 +17,12 @@ class MultipleCreditNote(models.TransientModel):
         selected_records = self.env['stock.picking'].browse(selected_ids)
         partner_id_list = []
         for ids in selected_records:
-            if ids.invoiced_id:
-                partner_id_list.append(ids.partner_id.parent_id)
-            else:
+            if not ids.invoiced_id:
                 raise ValidationError('Please Select Invoiced Orders')
-
+            if not ids.order_status=='cancelled':
+                raise ValidationError('Please Select  Cancelled Orders after Return')
+            else:
+                partner_id_list.append(ids.partner_id.parent_id)
         if len(set(partner_id_list)) == 1:
             print(partner_id_list)
             self.partner_id = list(set(partner_id_list))[0]
