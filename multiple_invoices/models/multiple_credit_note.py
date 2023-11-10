@@ -19,8 +19,8 @@ class MultipleCreditNote(models.TransientModel):
         for ids in selected_records:
             if not ids.invoiced_id:
                 raise ValidationError('Please Select Invoiced Orders')
-            if not ids.order_status=='cancelled':
-                raise ValidationError('Please Select  Cancelled Orders after Return')
+            if not ids.order_status=='returned':
+                raise ValidationError('Please Select  Return Orders')
             else:
                 partner_id_list.append(ids.partner_id.parent_id)
         if len(set(partner_id_list)) == 1:

@@ -50,6 +50,8 @@
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_date_time" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="return_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <field name="cancel_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="invoiced_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"
                        context="{'invoice_with_status': True}"/>
                 <field name="invoice_date" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
@@ -88,6 +90,9 @@
                 <filter name="state_re_dispatched" string="Re-Dispatched - DO"
                         domain="[('order_status', '=', 're_dispatched')]"/>
                 <filter name="state_canceled" string="Cancelled - DO" domain="[('order_status', '=', 'cancelled')]"/>
+                <filter name="not_yet_invoiced" string="Not Yet Invoiced" domain="[('invoiced_id', '=', False)]"/>
+                <filter name="not_yet_credited_note" string="Not Yet Credit Note Raised"
+                        domain="[('credit_note_number', '=', False)]"/>
             </xpath>
         </field>
     </record>

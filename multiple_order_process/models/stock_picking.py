@@ -27,6 +27,8 @@ class StockPickingEnhanced(models.Model):
         ('re_dispatched', 'RE_DISPATCHED')], tracking=True, readonly=1)
     zip = fields.Char(related='partner_id.zip', store=True)
     unique_ref = fields.Many2one('pemt.rec', string='Unique Reference', related='partner_id.unique_ref', readonly=1, store=True)
+    return_date = fields.Date(related="unique_ref.return_date",string="Return Date",readonly=1)
+    cancel_date = fields.Date(related="unique_ref.cancel_date",string="cancel Date",readonly=1)
     hub = fields.Char(string='HUB', related='courier_company.hub', readonly=1, store=True)
     airport = fields.Char(string='Airport', related='courier_company.airport', readonly=1, store=True)
     invoice_date = fields.Date(string='Invoice Date', related='invoiced_id.invoice_date', readonly=1, store=True)
