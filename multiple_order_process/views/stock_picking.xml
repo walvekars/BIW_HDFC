@@ -5,7 +5,10 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
+                <!--                To Remove -->
                 <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <!--                To Remove -->
+                <field name="courier_company_char" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="unique_ref" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"
                        context="{'custom_search': True}"/>
@@ -40,7 +43,10 @@
             <xpath expr="//field[@name='state']" position="before">
                 <field name="unique_ref" context="{'custom_search': True}"/>
                 <field name="zip" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <!--                To Remove -->
                 <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+                <!--                To Remove -->
+                <field name="courier_company_char" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="hand_off_date_time" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>

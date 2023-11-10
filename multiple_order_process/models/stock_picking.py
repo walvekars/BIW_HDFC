@@ -7,7 +7,10 @@ from num2words import num2words
 class StockPickingEnhanced(models.Model):
     _inherit = 'stock.picking'
 
+    # To Remove
     courier_company = fields.Many2one('courier.company.code', string='Courier Company', readonly=0, ondelete='restrict')
+    # To Remove
+    courier_company_char = fields.Char(string='Courier Company', readonly=0)
     awb_number = fields.Many2one('air.way.bill', string='AWB Number', readonly=0, ondelete='restrict')
     hand_off_id = fields.Char(string='Hand-off ID', readonly=1)
     invoiced_id = fields.Many2one('account.move', string='Invoiced ID', readonly=1)
