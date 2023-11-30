@@ -66,7 +66,7 @@ class GenerateMultipleInvoice(models.TransientModel):
 
         for recs in selected_records:
             tax_type = ''
-            if int(recs.partner_id.zip) < 600001 or int(recs.partner_id.zip) > 643253:
+            if int(recs.partner_id.zip) < 600001 or int(recs.partner_id.zip) > 669999:
                 recs.partner_id.update({
                     'property_account_position_id': self.env['account.fiscal.position'].search([('name', '=', 'Inter State')]).id
                 })
