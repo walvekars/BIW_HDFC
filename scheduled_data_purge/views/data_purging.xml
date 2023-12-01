@@ -91,8 +91,8 @@
                         <page name="purge_lines" string="Records">
                             <field name="purge_ids">
                                 <tree editable="bottom">
-                                    <field name="name"/>
-                                    <field name="columns" widget="many2many_tags" domain="[('model_id', '=', name)]"/>
+                                    <field name="name" string="Tables" options="{'no_create':True,'no_create_edit':True,'no_open': True}"/>
+                                    <field name="columns" string="Columns" widget="many2many_tags" domain="[('model_id', '=', name)]" options="{'no_create':True,'no_create_edit':True,'no_open': True}"/>
                                 </tree>
                             </field>
                         </page>

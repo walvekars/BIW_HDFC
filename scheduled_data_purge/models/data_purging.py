@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
+
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -70,94 +73,47 @@ class ConfigDataPurging(models.Model):
     def _onchange_interval_type(self):
         self.ir_cron.interval_number = self.interval_type
 
+    @api.constrains('purge_ids')
+    def on_save_purge(self):
+        if not self.purge_ids[-1].name.name == 'Contact':
+            raise ValidationError("At Present Only Supports For - Contact Table")
+        if len(set(self.purge_ids)) > 1:
+            raise ValidationError("Repeating of same table is not allowed")
+
     def data_purge(self, val):
-        print("data purging.............")
-        logger.info(f'Data Purging....')
         schedule_data_purging = self.search([('id', '=', val)])
-        logger.info(f"{schedule_data_purging} Data Purging Record")
-        print(schedule_data_purging)
         days_before = schedule_data_purging.days_before
-        print(days_before)
-        logger.info(f"Days Before: {days_before}")
-        that_date = datetime.date.today() - datetime.timedelta(days=days_before)
-        print(that_date)
-        logger.info(f"That date: {that_date}")
+        that_date = datetime.datetime.now() - datetime.timedelta(days=days_before)
         company_id = schedule_data_purging.name
-        print(company_id)
-        logger.info(f"Company ID: {company_id}")
-        print(that_date.strftime('%d-%m-%Y'))
-        logger.info(f'Without conversion: {that_date}')
-        logger.info(f"With conversion: {that_date.strftime('%Y-%m-%d')}")
-        print(self.env['pemt.rec'].search([]).customer)
-        logger.info(self.env['pemt.rec'].search([]).customer)
-        # logger.info(f"Update dates got in master 'DD:MM:YYYY': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%d-%m-%Y'))])}")
-        # logger.info(f"Update dates got in master 'MM:DD:YYYY': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%m-%d-%Y'))])}")
-        logger.info(f"Update dates got in master 'YYYY:MM:DD': {self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d'))])}")
-        logger.info(f"customer got in master: {self.env['pemt.rec'].search([('customer', '=', company_id.name)])}")
-        up_date_recs = self.env['pemt.rec'].search([('up_date', '=', that_date.strftime('%Y-%m-%d')), ('customer', '=', company_id.name)])
+        up_date_recs = self.env['pemt.rec'].search([('up_date', '<=', that_date), ('customer_name.parent_id', '=', company_id.name)])
+        # up_date_recs = self.env['pemt.rec'].search([('up_date', '>=', that_date), ('customer_name.parent_id', '=', company_id.name)])
+
         print(up_date_recs)
-        logger.info(f"Updating Records in master sheet: {up_date_recs}")
-        print(len(up_date_recs))
-        logger.info(f"Total Updating records in master: {len(up_date_recs)}")
-        up_date_recs.update(
-            {
-                'field12': False,
-                'field14': False,
-                'field15': False,
-                'field16': False,
-                'field17': False,
-                'field18': False,
-                'add3_997': False,
-                'field19': False,
-                'field20': False,
-                'field21': False,
-                'field22': False,
-                'field23': False,
-                'field24': False,
-                'field26': False,
-                'field27': False,
-                'field28': False,
-                'field29': False,
-                'field30': False,
-                'add3_996': False,
-                'field31': False,
-                'field32': False,
-                'field33': False,
-                'field34': False,
-                'field35': False,
-                'field36': False,
-                'field40': False,
-            }
-        )
 
-        print("cammmmmmmmmmmmmmmmmmm")
-        logger.info(f"after master")
 
-        up_date_list = []
-        for recs in up_date_recs:
-            up_date_list.append(recs.unique_ref)
+        logger.info(f'Data Purging....')
+        logger.info(f"{schedule_data_purging} Data Purging Record")
+        logger.info(f"Days Before: {days_before}")
+        logger.info(f"That date: {that_date}")
+        logger.info(f"Company ID: {company_id}")
 
-        print("jjjjjjjjjjjjj")
-        logger.info(f"update list for Contacts: {up_date_list}")
+        table_fields = {}
+        for records in schedule_data_purging.purge_ids:
+            if records.name.model == 'res.partner':
+                table_fields[records.name.model] = {}
+                for columns in records.columns:
+                    table_fields[records.name.model][str(columns.name)] = False
 
-        res_partner = self.env['res.partner'].search([('unique_ref', 'in', up_date_list)])
-        logger.info(f"Contacts list: {res_partner}")
-        for to_purge in res_partner:
-            to_purge.update(
-                {
-                    'name': to_purge.unique_ref,
-                    'street': False,
-                    'street2': False,
-                    'city': False,
-                    'state_id': False,
-                    'zip': False,
-                    'mobile': False,
-                    'email': False,
-                }
-            )
+        # for now only contact,
+        # later if wanted mastersheet, delivery.order can be included if some other fields of perticular column need to be purged
+        for to_purge in table_fields:
+            print(to_purge)
+            if to_purge == 'res.partner':
+                for recs in up_date_recs:
+                    recs.customer_name.update(table_fields[to_purge])
 
-        # stock_picking = self.env['stock.picking'].search([('unique_ref', 'in', up_date_list)])
-        # print(stock_picking)
+    # def table_data_purge(self):
+
 
 class ColumnToPurge(models.Model):
     _name = 'column.to.purge'
