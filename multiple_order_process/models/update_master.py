@@ -97,6 +97,9 @@ class UpdateMasterWizard(models.TransientModel):
                         if sum(return_list) == True:
                             order = self.env['stock.picking'].search(
                                 [('picking_type_code', '=', 'outgoing'), ('awb_number', '=', lines.awb_nos)])
+                            dic = {'invoiced_id': order.invoiced_id.id, 'invoice_date': order.invoice_date,
+                                   'credit_note_number': order.credit_note_number.id,
+                                   'credit_note_date': order.credit_note_date}
                             stock_return_picking = self.env['stock.return.picking'].create({'picking_id': order.id})
                             stock_return_picking._onchange_picking_id()
                             stock_return_picking_line = stock_return_picking.product_return_moves
@@ -105,6 +108,7 @@ class UpdateMasterWizard(models.TransientModel):
                             })
                             x = stock_return_picking.create_returns()
                             return_order = self.env['stock.picking'].search([('id', '=', x['res_id'])])
+                            return_order.write(dic)
                             return_order.action_set_quantities_to_reservation()
                             return_order.button_validate()
                             order.return_order = return_order

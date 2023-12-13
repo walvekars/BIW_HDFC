@@ -17,12 +17,20 @@ class MultipleCreditNote(models.TransientModel):
         selected_records = self.env['stock.picking'].browse(selected_ids)
         partner_id_list = []
         for ids in selected_records:
+            if ids.credit_note_number:
+                raise ValidationError('Selected order(s) is/are Credit note already raised.')
             if not ids.invoiced_id:
                 raise ValidationError('Please Select Invoiced Orders')
-            if not ids.order_status=='returned':
+            if (ids.state=='done' and 'Return of' not in ids.origin) and (ids.order_status not in ['returned', 'cancelled', 're_dispatched']):
                 raise ValidationError('Please Select  Return Orders')
             else:
-                partner_id_list.append(ids.partner_id.parent_id)
+                if ids.partner_id.parent_id:
+                    if (ids.partner_id.parent_id.is_company == True):
+                        partner_id_list.append(ids.partner_id.parent_id.id)
+
+                    else:
+                        partner_id_list.append(ids.partner_id.parent_id.parent_id.id)
+
         if len(set(partner_id_list)) == 1:
             print(partner_id_list)
             self.partner_id = list(set(partner_id_list))[0]

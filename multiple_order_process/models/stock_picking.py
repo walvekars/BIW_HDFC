@@ -229,5 +229,18 @@ class StockPickingEnhanced(models.Model):
             if printer_name:
                 conn.printFile(printer_name, 'Greetings.pdf', '', {})
 
+    @api.onchange('invoiced_id')
+    def update_data_child_invoice(self):
+        for rec in self:
+            if rec.return_order:
+                data = {'invoiced_id': rec.invoiced_id.id, 'invoice_date': rec.invoice_date}
+                upda = self.env['stock.picking'].browse(rec.return_order).write(data)
+
+    @api.onchange('credit_note_number')
+    def update_data_child_credit_note(self):
+        for rec in self:
+            if rec.return_order:
+                data = {'credit_note_number': rec.credit_note_number.id, 'credit_note_date': rec.credit_note_date}
+                upda = self.env['stock.picking'].browse(rec.return_order).write(data)
     # Every redispatch must have unique records in res.partners
     # send unique reference again to res.partners to use in stock.picking
