@@ -28,7 +28,7 @@ class StockPickingEnhanced(models.Model):
     zip = fields.Char(related='partner_id.zip', store=True)
     unique_ref = fields.Many2one('pemt.rec', string='Unique Reference', related='partner_id.unique_ref', readonly=1, store=True)
     return_date = fields.Date(related="unique_ref.return_date",string="Return Date",readonly=1)
-    cancel_date = fields.Date(related="unique_ref.cancel_date",string="Cancel Date",readonly=1)
+    cancel_date = fields.Date(related="unique_ref.cancel_date",string="cancel Date",readonly=1)
     hub = fields.Char(string='HUB', related='courier_company.hub', readonly=1, store=True)
     airport = fields.Char(string='Airport', related='courier_company.airport', readonly=1, store=True)
     invoice_date = fields.Date(string='Invoice Date', related='invoiced_id.invoice_date', readonly=1, store=True)
@@ -241,7 +241,6 @@ class StockPickingEnhanced(models.Model):
         for rec in self:
             if rec.return_order:
                 data = {'credit_note_number': rec.credit_note_number.id, 'credit_note_date': rec.credit_note_date}
-                self.env['stock.picking'].browse(rec.return_order).write(data)
-
+                upda = self.env['stock.picking'].browse(rec.return_order).write(data)
     # Every redispatch must have unique records in res.partners
     # send unique reference again to res.partners to use in stock.picking

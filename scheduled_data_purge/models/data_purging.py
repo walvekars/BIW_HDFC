@@ -107,11 +107,10 @@ class ConfigDataPurging(models.Model):
         # for now only contact,
         # later if wanted mastersheet, delivery.order can be included if some other fields of perticular column need to be purged
         for to_purge in table_fields:
+            print(to_purge)
             if to_purge == 'res.partner':
                 for recs in up_date_recs:
                     recs.customer_name.update(table_fields[to_purge])
-                    recs.customer_name.name = recs.unique_ref
-                    recs.purged = True  # Tata New
 
     # def table_data_purge(self):
 

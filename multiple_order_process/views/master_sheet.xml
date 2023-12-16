@@ -13,16 +13,15 @@
 
                 <field name="ref_no"/>
                 <field name="customer_name"/>
-                <field name="add1" invisible="1"/>
-                <field name="add2" invisible="1"/>
-                <field name="add3" invisible="1"/>
-                <field name="city" invisible="1"/>
-                <field name="zip_code" invisible="1"/>
-                <field name="ph_res" invisible="1"/>
-                <field name="ph_off" invisible="1"/>
-                <field name="mobile" invisible="1"/>
-                <field name="email_id" invisible="1"/>
-                <field name="purged"/>
+                <field name="add1"/>
+                <field name="add2"/>
+                <field name="add3"/>
+                <field name="city"/>
+                <field name="zip_code"/>
+                <field name="ph_res"/>
+                <field name="ph_off"/>
+                <field name="mobile"/>
+                <field name="email_id"/>
                 <field name="item_code"/>
                 <field name="item_desc"/>
                 <field name="global_item_code"/>
