@@ -21,13 +21,12 @@ class MultipleCreditNote(models.TransientModel):
                 raise ValidationError('Selected order(s) is/are Credit note already raised.')
             if not ids.invoiced_id:
                 raise ValidationError('Please Select Invoiced Orders')
-            if (ids.state=='done' and 'Return of' not in ids.origin) and (ids.order_status not in ['returned', 'cancelled', 're_dispatched']):
+            if ids.state == 'done' and 'Return of' not in ids.origin: # and (ids.order_status not in ['returned', 'cancelled', 're_dispatched']):
                 raise ValidationError('Please Select  Return Orders')
             else:
                 if ids.partner_id.parent_id:
-                    if (ids.partner_id.parent_id.is_company == True):
+                    if ids.partner_id.parent_id.is_company == True:
                         partner_id_list.append(ids.partner_id.parent_id.id)
-
                     else:
                         partner_id_list.append(ids.partner_id.parent_id.parent_id.id)
 
