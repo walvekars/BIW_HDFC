@@ -20,7 +20,7 @@
             <span>
                 <strong>Courier:</strong>
             </span>
-            <t t-esc="docs.sel_hand_off.courier_company.courier_company.name"/>
+            <t t-esc="docs.sel_hand_off.courier_company_id.name"/>
             <br/>
             <hr/>
             <b>Client:</b>

@@ -24,7 +24,7 @@
                         <span>
                             <b>Courier Company:</b>
                         </span>
-                        <t t-esc="docs.sel_hand_off.courier_company.courier_company.name"/>
+                        <t t-esc="docs.sel_hand_off.courier_company_id.name"/>
                     </td>
                 </tr>
             </table>
@@ -56,12 +56,12 @@
                         <span>
                             <b>Courier Name:</b>
                         </span>
-                        <t t-esc="docs.sel_hand_off.courier_company.courier_company.name"/>
+                        <t t-esc="docs.sel_hand_off.courier_company_id.name"/>
                         <br/>
                         <span>
                             <b>Courier Acc No:</b>
                         </span>
-                        <t t-esc="docs.sel_hand_off.courier_company.courier_company.courier_account_number"/>
+                        <t t-esc="docs.sel_hand_off.courier_company_id.courier_account_number"/>
                         <br/>
                         <br/>
                     </td>

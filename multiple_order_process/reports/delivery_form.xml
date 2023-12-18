@@ -34,8 +34,8 @@
                             <tr>
                                 <td colspan="5" style="width:100mm; border: 1pt solid black; text-align:center;">
                                     <span style="font-size:12px;">
-                                        <t t-esc="o.courier_company.courier_company.name"/>:
-                                        <t t-esc="o.courier_company.courier_company.courier_account_number"/>
+                                        <t t-esc="o.courier_company_id.name"/>:
+                                        <t t-esc="o.courier_company_id.courier_account_number"/>
                                     </span>
                                 </td>
                             </tr>
@@ -51,7 +51,7 @@
                                 </td>
                                 <td style="width:20mm; border: 1pt solid black;">
                                     <span style="font-size:12px; text-align:center;">
-                                        <t t-esc="o.courier_company.airport"/>
+                                        <t t-esc="o.airport"/>
                                     </span>
                                 </td>
                             </tr>
@@ -61,7 +61,7 @@
                                 </td>
                                 <td style="width:20mm; border: 1pt solid black">
                                     <span style="font-size:12px;">
-                                        <t t-esc="o.courier_company.hub"/>
+                                        <t t-esc="o.hub"/>
                                     </span>
                                 </td>
                             </tr>
