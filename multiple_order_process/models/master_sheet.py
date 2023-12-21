@@ -63,6 +63,7 @@ class PermanentRecords(models.Model):
     try_no = fields.Many2one('multi.try', ondelete='restrict', related='customer_name.tries', store=True)
     try_no_type = fields.Selection(related='try_no.type', string='Try No', store=True)
     purged = fields.Boolean(string="Purged", tracking=True, default=False, readonly=True)
+    latest = fields.Boolean(default=False, tracking=True, readonly=True, invisible=1)
     
     @api.model
     def create(self, vals):

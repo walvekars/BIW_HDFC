@@ -234,6 +234,12 @@ class UpdateMasterWizard(models.TransientModel):
                                             'qty': parent_awb.qty,
                                         })
 
+                                        same_unique = self.env['pemt.rec'].search([('unique_ref', '=', order.unique_ref)])
+                                        same_unique.update({
+                                            'latest': False
+                                        })
+                                        order.latest = True
+
                                         contact = parent_awb.customer_name.create({
                                             'unique_ref': order.id,
                                             'parent_id': parent_awb.customer_name.id,

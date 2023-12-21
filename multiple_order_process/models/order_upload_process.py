@@ -103,6 +103,7 @@ class TemporaryRecords(models.Model):
                     'global_item_code': ids.global_item_code.id,
                     'item_desc': ids.item_desc,
                     'qty': ids.qty,
+                    'latest': True
                 })
 
                 contact = res_partners.create({
@@ -245,6 +246,7 @@ class TemporaryRecords(models.Model):
                                     'item_desc': line[12].strip(),
                                     'qty': line[13].strip(),
                                     'global_item_code': prods.global_code.id,
+                                    'latest': True
                                 })
 
                                 master_sheet_new.append(master_id)
