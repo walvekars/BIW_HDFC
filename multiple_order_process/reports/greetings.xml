@@ -1,7 +1,7 @@
 <odoo>
     <template id="report_greetings_report">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
+            <t t-foreach="docs[::-1]" t-as="o">
                 <t t-if="o.picking_type_code == 'outgoing'">
                     <div style="page-break-inside: avoid">
                         <div style="font-size:17px;">
