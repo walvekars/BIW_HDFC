@@ -12,7 +12,6 @@
                 <!--                <field name="customer"/>-->
 
                 <field name="ref_no"/>
-                <field name="customer_name"/>
                 <field name="add1" invisible="1"/>
                 <field name="add2" invisible="1"/>
                 <field name="add3" invisible="1"/>
