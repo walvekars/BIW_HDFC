@@ -31,13 +31,13 @@ class PermanentRecords(models.Model):
     order_no = fields.Many2one('sale.order', string='ORDER NO', ondelete='restrict', tracking=True)
     delivery_id = fields.Many2one('stock.picking', string='DELIVERY ID', ondelete='restrict', tracking=True)
     wip_date = fields.Date(string='WIP DATE', help='This date updates based on First WIP Boolean field, if it is false date updates here and sets tpo True', tracking=True)
-    first_wip = fields.Boolean(string='First WIP', default=False, help="Called First wip because, There are many wip states Those are ODOO - Waiting and Confirmed, and BIW - Ready and Not Serviceable",tracking=True)
+    # first_wip = fields.Boolean(string='First WIP', default=False, help="Called First wip because, There are many wip states Those are ODOO - Waiting and Confirmed, and BIW - Ready and Not Serviceable",tracking=True)
     shipment_file_done_wip = fields.Boolean(default=False, help="This is for report purpose - Shipment File, WIP orders will be printed only once, the same orders will print once the status gets changed")
     hand_off_id = fields.Char(string='HAND-OFF ID', related='delivery_id.hand_off_id', store=True)
     hand_off_date = fields.Date(string='HAND-OFF Date', tracking=True)
     awb_nos = fields.Many2one('air.way.bill', string='AWB NO', related='delivery_id.awb_number', store=True)
     dispatched_on = fields.Date(string='DISPATCHED ON', tracking=True)
-    courier = fields.Many2one('courier.company.code', string='COURIER', related='delivery_id.courier_company', store=True)
+    courier = fields.Many2one('res.partner', string='COURIER', related='delivery_id.courier_company_id', store=False)
     pod_date = fields.Date(string='POD DATE', tracking=True)
     up_pod_date = fields.Date(string='DELIVERY UPDATE', tracking=True)
     person_delv = fields.Char(string='PERSON DELV', tracking=True)
@@ -84,9 +84,9 @@ class PermanentRecords(models.Model):
     @api.constrains('order_status')
     def change_state(self):
         for rec in self:
-            if rec.order_status == 'wip' and rec.first_wip == False:
+            if rec.order_status == 'wip' and rec.wip_date == False:
                 rec.wip_date = datetime.date.today()
-                rec.first_wip = True
+                # rec.first_wip = True
             if rec.order_status == 'hand_off':
                 rec.hand_off_date = datetime.date.today()
             if rec.order_status == 'dispatched':

@@ -10,7 +10,7 @@ class StockPickingEnhanced(models.Model):
     # To Remove
     courier_company = fields.Many2one('courier.company.code', string='Courier Company', readonly=0, ondelete='restrict')
     # To Remove
-    courier_company_char = fields.Char(string='Courier Company', readonly=0)
+    courier_company_id = fields.Many2one('res.partner', string='Courier Company', readonly=0, ondelete='restrict')
     awb_number = fields.Many2one('air.way.bill', string='AWB Number', readonly=0, ondelete='restrict')
     hand_off_id = fields.Char(string='Hand-off ID', readonly=1)
     invoiced_id = fields.Many2one('account.move', string='Invoiced ID', readonly=1)
@@ -29,8 +29,15 @@ class StockPickingEnhanced(models.Model):
     unique_ref = fields.Many2one('pemt.rec', string='Unique Reference', related='partner_id.unique_ref', readonly=1, store=True)
     return_date = fields.Date(related="unique_ref.return_date",string="Return Date",readonly=1)
     cancel_date = fields.Date(related="unique_ref.cancel_date",string="Cancel Date",readonly=1)
-    hub = fields.Char(string='HUB', related='courier_company.hub', readonly=1, store=True)
-    airport = fields.Char(string='Airport', related='courier_company.airport', readonly=1, store=True)
+
+    # hub = fields.Char(string='HUB', related='courier_company.hub', readonly=1, store=True)
+    # airport = fields.Char(string='Airport', related='courier_company.airport', readonly=1, store=True)
+
+    # Altered
+    hub = fields.Char(string='HUB', readonly=1, store=True)
+    airport = fields.Char(string='Airport', readonly=1, store=True)
+    # Altered
+
     invoice_date = fields.Date(string='Invoice Date', related='invoiced_id.invoice_date', readonly=1, store=True)
     credit_note_number = fields.Many2one('account.move', string='Credit Note Number', readonly=1)
     credit_note_date = fields.Date(string='Credit Note Date', related='credit_note_number.invoice_date', readonly=1, store=True)
@@ -113,14 +120,14 @@ class StockPickingEnhanced(models.Model):
                 if rec.state == 'assigned' and rec.order_status == 'ready':
                     if rec.zip != '':
                         for courier in range(len(sorted)):
-                            if rec.courier_company.id == False and rec.awb_number.id == False:
+                            if rec.courier_company_id.id == False and rec.awb_number.id == False:
                                 parent_pincode_ids = tot_couriers[sorted[courier]].courier_pincode_ids.search([('pin_code', '=', rec.zip)])
                                 pincode_id = tot_couriers[sorted[courier]].courier_pincode_ids.search([('courier_company', '=', tot_couriers[sorted[courier]].id), ('pin_code', '=', rec.zip)])
                                 awb_remaining = pincode_id.courier_company.serviced_awb.search([('delivery_order_number', '=', False), ('serviced_awb_link', '=', pincode_id.courier_company.id)])
                                 if parent_pincode_ids:
                                     if pincode_id:
                                         if len(awb_remaining) != 0:
-                                            rec.courier_company = pincode_id.id
+                                            rec.courier_company_id = pincode_id.courier_company.id
                                             rec.awb_number = awb_remaining[0].id
                                             awb_remaining[0].delivery_order_number = rec.id
                                             rec.order_status = 'hand_off'
@@ -144,8 +151,8 @@ class StockPickingEnhanced(models.Model):
 
         cour_company_list = []
         for recs in self:
-            if recs.courier_company:
-                cour_company_list.append(recs.courier_company.courier_company)
+            if recs.courier_company_id:
+                cour_company_list.append(recs.courier_company_id)
         print(cour_company_list)
 
         map_hand_off_id = {}
@@ -155,7 +162,7 @@ class StockPickingEnhanced(models.Model):
 
         for lines in self:
             for ids in map_hand_off_id:
-                if lines.courier_company.courier_company == ids:
+                if lines.courier_company_id == ids:
                     lines.hand_off_id = map_hand_off_id[ids]
                     lines.hand_off_date_time = datetime.datetime.now()
 

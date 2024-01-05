@@ -6,8 +6,13 @@ class ShipmentFileWizard(models.TransientModel):
     _name = 'shipment.file.wizard'
 
     company = fields.Many2one('res.partner', 'Company', required=True)
-    from_date = fields.Datetime('From Date', required=True)
-    to_date = fields.Datetime('To Date', required=True)
+
+    # from_date = fields.Datetime('From Date', required=True)
+    # to_date = fields.Datetime('To Date', required=True)
+
+    from_date = fields.Date('From Date', required=True)
+    to_date = fields.Date('To Date', required=True)
+
     is_wip = fields.Boolean('WIP')
     is_cancelled = fields.Boolean('Cancelled')
     is_dispatched = fields.Boolean('Dispatched')

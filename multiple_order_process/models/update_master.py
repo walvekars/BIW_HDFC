@@ -197,80 +197,83 @@ class UpdateMasterWizard(models.TransientModel):
 
             if self.to_update == 'returned_n_reshipped':  # To do this mapping customer(address_id_map) is must in master sheet
                 if lines.awb_nos:
-                    if lines.awb_nos.strip() in awb_no:
-                        if awb_no_searched.order_status == 'returned':
-                            if datetime.date.today() > awb_no_searched.up_return_date:    # bhjfjvhjvbhvbdvbhdsvbhdsvb should be uncommented and send..............................................................
+                    if lines.name != False and lines.pin != False:
+                        if lines.awb_nos.strip() in awb_no:
+                            if awb_no_searched.order_status == 'returned':
+                                if datetime.date.today() > awb_no_searched.up_return_date:    # bhjfjvhjvbhvbdvbhdsvbhdsvb should be uncommented and send..............................................................
 
-                                tries_list = []
-                                parent_awb = ''
-                                if awb_no_searched.parent_line.id == False:
-                                    tries_list.append(0)
-                                    parent_awb = awb_no_searched
-                                    company_ids.append(awb_no_searched.customer_name.parent_id)
+                                    tries_list = []
+                                    parent_awb = ''
+                                    if awb_no_searched.parent_line.id == False:
+                                        tries_list.append(0)
+                                        parent_awb = awb_no_searched
+                                        company_ids.append(awb_no_searched.customer_name.parent_id)
+                                    else:
+                                        parent_awb = awb_no_searched.parent_line
+                                        company_ids.append(awb_no_searched.parent_line.customer_name.parent_id)
+                                        for recs in awb_no_searched.parent_line.try_lines:
+                                            tries_list.append(recs.try_no_type)
+                                    print(parent_awb)
+
+                                    tries_available = []
+                                    for tries in self.env['multi.try'].search([]):
+                                        tries_available.append(int(tries.type))
+
+                                    if int(max(tries_list)) < max(tries_available):
+                                        new_try = self.env['multi.try'].search([('type', '=', str(int(max(tries_list)) + 1))])
+
+                                        order = parent_awb.try_lines.create({
+                                            'parent_line': parent_awb.id,
+                                            'unique_ref': parent_awb.unique_ref,
+                                            'file_name': parent_awb.file_name.id,
+                                            'up_date': parent_awb.up_date,
+                                            'ref_no': parent_awb.ref_no,
+                                            'item_code': parent_awb.item_code,
+                                            'item_desc': parent_awb.item_desc,
+                                            'global_item_code': parent_awb.global_item_code.id,
+                                            'qty': parent_awb.qty,
+                                        })
+
+                                        contact = parent_awb.customer_name.create({
+                                            'unique_ref': order.id,
+                                            'parent_id': parent_awb.customer_name.id,
+                                            'type': 'delivery',
+                                            'company_type': 'person',
+                                            'tries': new_try.id,
+                                            'name': lines.name,
+                                            'street': lines.add1,
+                                            'street2': lines.add2,
+                                            'city': lines.city,
+                                            'zip': lines.pin,
+                                            'mobile': lines.phone,
+                                            'email': lines.email
+                                        })
+
+                                        order.update({
+                                            'customer_name': contact.id
+                                        })
+
+                                        created_retry_line.append(order)
+                                        awb_no_searched.delivery_id.order_status = 're_dispatched'
+
+                                        vals.append((0, 0, {
+                                            'product_id': parent_awb.global_item_code.id,
+                                            'name': parent_awb.item_desc,
+                                            'contact_name': contact.id,
+                                            'product_uom_qty': parent_awb.qty
+                                        }))
+                                        delete.append(lines.id)
+
+                                    else:
+                                        raise UserError('Maximum Try Reached: ' + str(max(tries_available)))
                                 else:
-                                    parent_awb = awb_no_searched.parent_line
-                                    company_ids.append(awb_no_searched.parent_line.customer_name.parent_id)
-                                    for recs in awb_no_searched.parent_line.try_lines:
-                                        tries_list.append(recs.try_no_type)
-                                print(parent_awb)
-
-                                tries_available = []
-                                for tries in self.env['multi.try'].search([]):
-                                    tries_available.append(int(tries.type))
-
-                                if int(max(tries_list)) < max(tries_available):
-                                    new_try = self.env['multi.try'].search([('type', '=', str(int(max(tries_list)) + 1))])
-
-                                    order = parent_awb.try_lines.create({
-                                        'parent_line': parent_awb.id,
-                                        'unique_ref': parent_awb.unique_ref,
-                                        'file_name': parent_awb.file_name.id,
-                                        'up_date': parent_awb.up_date,
-                                        'ref_no': parent_awb.ref_no,
-                                        'item_code': parent_awb.item_code,
-                                        'item_desc': parent_awb.item_desc,
-                                        'global_item_code': parent_awb.global_item_code.id,
-                                        'qty': parent_awb.qty,
-                                    })
-
-                                    contact = parent_awb.customer_name.create({
-                                        'unique_ref': order.id,
-                                        'parent_id': parent_awb.customer_name.id,
-                                        'type': 'delivery',
-                                        'company_type': 'person',
-                                        'tries': new_try.id,
-                                        'name': lines.name,
-                                        'street': lines.add1,
-                                        'street2': lines.add2,
-                                        'city': lines.city,
-                                        'zip': lines.pin,
-                                        'mobile': lines.phone,
-                                        'email': lines.email
-                                    })
-
-                                    order.update({
-                                        'customer_name': contact.id
-                                    })
-
-                                    created_retry_line.append(order)
-                                    awb_no_searched.delivery_id.order_status = 're_dispatched'
-
-                                    vals.append((0, 0, {
-                                        'product_id': parent_awb.global_item_code.id,
-                                        'name': parent_awb.item_desc,
-                                        'contact_name': contact.id,
-                                        'product_uom_qty': parent_awb.qty
-                                    }))
-                                    delete.append(lines.id)
-
-                                else:
-                                    raise UserError('Maximum Try Reached: ' + str(max(tries_available)))
+                                    raise UserError("Can't Re-Dispatch the orders which are returned Today")   # bhjfjvhjvbhvbdvbhdsvbhdsvb should be uncommented and send..............................................................
                             else:
-                                raise UserError("Can't Re-Dispatch the orders which are returned Today")   # bhjfjvhjvbhvbdvbhdsvbhdsvb should be uncommented and send..............................................................
+                                raise UserError('Order must be "Returned" to Re-Dispatch the order')
                         else:
-                            raise UserError('Order must be "Returned" to Re-Dispatch the order')
+                            raise UserError("AWB Number Doesn't exists")
                     else:
-                        raise UserError("AWB Number Doesn't exists")
+                        raise UserError("Name and pin codes are mandatory while Re-Dispatching any order")
                 else:
                     raise UserError("Empty AWB Number")
 

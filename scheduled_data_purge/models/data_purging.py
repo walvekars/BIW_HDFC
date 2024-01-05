@@ -85,7 +85,7 @@ class ConfigDataPurging(models.Model):
         days_before = schedule_data_purging.days_before
         that_date = datetime.datetime.now() - datetime.timedelta(days=days_before)
         company_id = schedule_data_purging.name
-        up_date_recs = self.env['pemt.rec'].search([('up_date', '<=', that_date), ('customer_name.parent_id', '=', company_id.name)])
+        up_date_recs = self.env['pemt.rec'].search([('up_date', '<=', that_date), ('customer_name.parent_id', '=', company_id.name), ('purged', '=', False)])
         # up_date_recs = self.env['pemt.rec'].search([('up_date', '>=', that_date), ('customer_name.parent_id', '=', company_id.name)])
 
         print(up_date_recs)

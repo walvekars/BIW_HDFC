@@ -74,7 +74,7 @@ class InvoiceSupportingReport(models.AbstractModel):
                 if(pemt_rec.awb_nos):
                     sheet.write(row + 1, col + 11, pemt_rec.awb_nos.awb_number, )
                 if (pemt_rec.courier):
-                    sheet.write(row + 1, col + 12, pemt_rec.courier.courier_company.name, )
+                    sheet.write(row + 1, col + 12, pemt_rec.courier.name, )
                 if (pemt_rec.person_delv):
                     print('persaon delivered         cd.................',pemt_rec.person_delv)
                     sheet.write(row + 1, col + 13, pemt_rec.person_delv, )
