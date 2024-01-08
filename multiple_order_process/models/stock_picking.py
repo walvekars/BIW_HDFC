@@ -8,7 +8,7 @@ class StockPickingEnhanced(models.Model):
     _inherit = 'stock.picking'
 
     # To Remove
-    courier_company = fields.Many2one('courier.company.code', string='Courier Company', readonly=0, ondelete='restrict')
+    # courier_company = fields.Many2one('courier.company.code', string='Courier Company', readonly=0, ondelete='restrict')
     # To Remove
     courier_company_id = fields.Many2one('res.partner', string='Courier Company', readonly=0, ondelete='restrict')
     awb_number = fields.Many2one('air.way.bill', string='AWB Number', readonly=0, ondelete='restrict')

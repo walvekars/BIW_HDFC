@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
                 <!--                To Remove -->
-                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+<!--                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
                 <!--                To Remove -->
                 <field name="courier_company_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
@@ -44,7 +44,7 @@
                 <field name="unique_ref" context="{'custom_search': True}"/>
                 <field name="zip" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <!--                To Remove -->
-                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
+<!--                <field name="courier_company" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>-->
                 <!--                To Remove -->
                 <field name="courier_company_id" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
                 <field name="awb_number" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}"/>
